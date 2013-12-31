@@ -1,6 +1,5 @@
-public class Scheduler extends Chooser {
+public class ActionScheduler extends Chooser {
     // set up our action data
-
     // actionBattery an array of effects to apply to a sample
     Action @ actionBattery[3];
     new ActionSampleReverse @=> actionBattery[0];
@@ -15,6 +14,10 @@ public class Scheduler extends Chooser {
     0 => int actionCurrentCount;
 
     int actionCurrentStore[0];
+
+    fun void initialise( Sample sample ) {
+        schedule( sample );
+    }
 
     fun void schedule( Sample sample ) {
         while ( true ) {

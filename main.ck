@@ -9,5 +9,5 @@ Machine.add(lib_path + "/Action/ActionSampleReverse.ck");
 Machine.add(lib_path + "/Action/ActionDelay.ck");
 Machine.add(lib_path + "/Action/ActionFadeIn.ck");
 Machine.add(lib_path + "/Action/ActionFadeOut.ck");
-Machine.add(lib_path + "/Scheduler.ck");
+Machine.add(lib_path + "/ActionScheduler.ck");
 Machine.add("score.ck");

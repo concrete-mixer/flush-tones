@@ -5,8 +5,8 @@ me.dir() => string path;
 fun void init_sample(string filepath, int loop) {
     Sample sample;
     sample.initialise(filepath, 1);
-    Scheduler schedule;
-    schedule.schedule(sample);
+    ActionScheduler schedule;
+    schedule.initialise(sample);
 }
 
 spork ~ init_sample(path + "audio/santorini_cistern.wav", 1);

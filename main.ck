@@ -1,0 +1,13 @@
+me.dir() + "/lib/" => string lib_path;
+Machine.add(lib_path + "/Chooser.ck");
+Machine.add(lib_path + "/LFO.ck");
+Machine.add(lib_path + "/Fader.ck");
+Machine.add(lib_path + "/Panner.ck");
+Machine.add(lib_path + "/Sample.ck");
+Machine.add(lib_path + "/Action.ck");
+Machine.add(lib_path + "/Action/ActionSampleReverse.ck");
+Machine.add(lib_path + "/Action/ActionDelay.ck");
+Machine.add(lib_path + "/Action/ActionFadeIn.ck");
+Machine.add(lib_path + "/Action/ActionFadeOut.ck");
+Machine.add(lib_path + "/Scheduler.ck");
+Machine.add("score.ck");

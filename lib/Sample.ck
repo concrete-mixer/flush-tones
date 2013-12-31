@@ -5,16 +5,16 @@ public class Sample {
 
     // use PainGain's gain by default
     SndBuf buf1, buf2;
-
-    buf1 => dac.left;
-    0 => buf1.gain;
     1 => int channelCount;
 
     fun void initialise(string filepath, int loop) {
         // here we need to work out number of channels and whether
         // sndbuf should be mono or stereo. See
         // https://lists.cs.princeton.edu/pipermail/chuck-users/2010-November/005864.html
+
         buf1.read(filepath);
+        0 => buf1.gain;
+        buf1 => dac.left;
 
         buf1.channels() => channelCount;
 

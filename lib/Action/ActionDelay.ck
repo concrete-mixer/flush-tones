@@ -9,13 +9,14 @@ public class ActionDelay extends Action {
         Echo echoR => dac.right;
         chooser.getDur( 0.02, 0.5 ) => dur leftLength;
         chooser.getDur( 0.02, 0.5 ) => dur rightLength;
+        chooser.getFloat( 0.2, 0.8 ) => float echoMix;
 
         echoL.delay( leftLength );
         echoR.delay( rightLength );
         echoL.gain( 0.8 );
         echoR.gain( 0.8 );
-        echoL.mix( 0.5 );
-        echoR.mix( 0.5 );
+        echoL.mix( echoMix );
+        echoR.mix( echoMix );
         sample.connect( echoL, echoR );
         echoDuration => now;
         sample.disconnect( echoL, echoR );

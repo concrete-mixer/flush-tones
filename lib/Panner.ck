@@ -41,8 +41,8 @@ public class Panner extends LFO {
 
     fun void makePan() {
         // need the 
-        c.getRandFloat( 0.05, 5 ) => float freq;
-        c.getRandFloat( 0, 1.0 ) => float amount;
+        c.getFloat( 0.05, 5 ) => float freq;
+        c.getFloat( 0, 1.0 ) => float amount;
         c.getDur( 5, 60 ) => dur panDuration;
         getOscType() => string oscType;
         <<< "PanGain running changePan(): freq ", freq, " amount ", amount, " duration ", panDuration, " oscillator type ", oscType >>>;

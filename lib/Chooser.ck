@@ -1,5 +1,5 @@
 /*
-    Class to manage waiting, doing something, and doing nothing
+    Class providing functions to derive random values
 */
 public class Chooser {
     /*
@@ -37,7 +37,7 @@ public class Chooser {
 
     // takes care of generating random floats, which we seem
     // to need a lot of
-    fun static float getRandFloat( float min, float max ) {
+    fun static float getFloat( float min, float max ) {
         return Std.rand2f( min, max );
     }
 }

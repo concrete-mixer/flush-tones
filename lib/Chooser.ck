@@ -26,7 +26,7 @@ public class Chooser {
     // wait just calls getDur; it's defined to disambiguate
     // calls for the purpose of determining durations of idleness
     // vs calls made to get a dur to do something with
-    fun static dur wait( float min, float max ) {
+    fun static dur getWait( float min, float max ) {
         return getDur( min, max );
     }
 
@@ -34,11 +34,14 @@ public class Chooser {
         return Math.random2f( min, max )::second;
     }
 
-
     // takes care of generating random floats, which we seem
     // to need a lot of
     fun static float getFloat( float min, float max ) {
         return Std.rand2f( min, max );
+    }
+
+    fun static int getInt( int min, int max ) {
+        return Math.random2( min, max );
     }
 }
 

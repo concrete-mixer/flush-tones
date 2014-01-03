@@ -1,63 +1,57 @@
-public class ActionScheduler extends Chooser {
+public class ActionScheduler {
+    Chooser chooser;
+
     // set up our action data
     // actionBattery an array of effects to apply to a sample
-    Action @ actionBattery[3];
-    new ActionSampleReverse @=> actionBattery[0];
-    new ActionDelay @=> actionBattery[1];
-    new ActionFadeOut @=> actionBattery[2];
+    Action @ actionBattery[1];
+    new ActionChangeFx @=> actionBattery[0];
+    // new ActionSampleReverse @=> actionBattery[0];
+    // new ActionFadeOut @=> actionBattery[1];
 
     ActionFadeIn fadeIn;
     // ActionFadeOut fadeOut;
+
+    FxManager fxManager;
 
     // keep guages of number of effects in operation
     // rather than apply effects one at a time
     0 => int actionCurrentCount;
 
-    int actionCurrentStore[0];
+    Action @ actionCurrentStore[0];
 
-    fun void initialise( Sample sample ) {
-        schedule( sample );
+    fun void initialise( Sample sample, dur interval ) {
+        schedule( sample, interval );
+        fxManager.initialise( sample );
     }
 
-    fun void schedule( Sample sample ) {
+    fun void schedule( Sample sample, dur interval ) {
         while ( true ) {
-            dur waitDur;
-            <<< "actionCurrentCount", actionCurrentCount >>>;
-
             // if the sample is currently faded out, our response should be to
             // fade it in
-            <<< "sample.fadeState", sample.fadeState >>>;
 
-            if ( takeAction( 1 ) ) {
+            if ( chooser.takeAction( 1 ) ) {
                 if ( sample.fadeState == "out" ) {
-                    <<< "fading in" >>>;
-                    fadeIn.execute( sample ) => waitDur;
+                    fadeIn.execute( sample );
                 }
                 else if ( actionCurrentCount < 3 ) {
-                    <<< "Sporking!" >>>;
                     spork ~ determineAction( sample );
                 }
             }
 
-            // define waitDur if not already defined
-            if ( waitDur == 0::second ) {
-                wait( 5, 10 ) => waitDur;
-            }
-
-            <<< "Waiting", waitDur / 44100, "seconds" >>>;
-            waitDur => now;
+            interval => now;
         }
     }
 
     fun dur determineAction( Sample sample ) {
         actionCurrentCount++;
         dur actionDuration;
+        chooser.getInt( 0, actionBattery.cap() - 1 ) => int i;
 
-        Math.random2( 0, actionBattery.cap() - 1 ) => int i;
-
-        if ( actionInstanceCheck(i) ) {
+        if ( ! actionInstanceCheck(i) ) {
             actionBattery[i].execute( sample ) => dur actionDuration;
-            <<< "Action took", actionDuration / 44100, "seconds", actionCurrentCount >>>;
+        }
+        else {
+            <<< "action of this type already being processed" >>>;
         }
 
         actionCurrentCount--;
@@ -67,12 +61,37 @@ public class ActionScheduler extends Chooser {
     fun int actionInstanceCheck( int i ) {
         actionBattery[i].idString() => string idString;
 
-        if ( actionCurrentStore[ idString ] == 1 ) {
-            return 0;
+        for ( 0 => int j; j < actionCurrentStore.cap() - 1; j++ ) {
+            if ( actionCurrentStore[j].idString() == idString ) {
+                if ( actionCurrentStore[j].checkRunning() ) {
+                    <<< "chucklehead" >>>;
+                    return 1;
+                }
+                else {
+                    <<< "aha!" >>>;
+                    // "delete" item from actionCurrentStore
+                    deleteFromCurrentStore( j );
+                    return 0;
+                }
+            }
         }
-        else {
-            1 => actionCurrentStore[ idString ];
-            return 1;
+    }
+
+    // Method to 'delete' a value from actionCurrentStore by
+    // creating a new array and adding all elements but the value
+    // we want deleted, then replacing actionCurrentStore with
+    // the new array
+    fun void deleteFromCurrentStore( int i ) {
+        Action @ newActionCurrentStore[0];
+        0 => int k;
+
+        for( 0 => int j; j < actionCurrentStore.cap() - 1; j++ ) {
+            if ( j != i ) {
+                actionCurrentStore[j] @=> newActionCurrentStore[k];
+                k++;
+            }
         }
+
+        newActionCurrentStore @=> actionCurrentStore;
     }
 }

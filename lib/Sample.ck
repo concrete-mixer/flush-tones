@@ -84,31 +84,32 @@ public class Sample {
         }
     }
 
-    fun void connect( UGen inputLeft, UGen inputRight ) {
-        <<< "connecting" >>>;
+    fun void connect( Gain inputL, Gain inputR ) {
+        <<< "Sample.connect(): running" >>>;
         buf1 =< dac.left;
-        buf1 => inputLeft;
+        buf1 => inputL;
 
         if ( channelCount == 2 ) {
             buf2 =< dac.right;
-            buf2 => inputRight;
+            buf2 => inputR;
         }
         else {
-            buf1 => inputRight;
+            buf1 => inputR;
+            buf1 =< dac.right;
         }
     }
 
-    fun void disconnect( UGen inputLeft, UGen inputRight ) {
+    fun void disconnect( Gain outputL, Gain outputR ) {
         <<< "disconnecting" >>>;
-        buf1 =< inputLeft;
+        buf1 =< outputL;
         buf1 => dac.left;
 
         if ( channelCount == 2 ) {
-            buf2 =< inputRight;
+            buf2 =< outputR;
             buf2 => dac.right;
         }
         else {
-            buf1 =< inputRight;
+            buf1 =< outputR;
             buf1 => dac.right;
         }
     }

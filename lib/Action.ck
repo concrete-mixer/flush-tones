@@ -3,5 +3,7 @@ public class Action {
 
     fun dur execute( Sample sample ) {}
 
-    fun string idString() {}
+    fun string idString() { return "Action"; }
+
+    fun int checkRunning() { return 0; }
 }

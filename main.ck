@@ -7,6 +7,8 @@ Machine.add(lib_path + "/Sample.ck");
 Machine.add(lib_path + "/Action.ck");
 Machine.add(lib_path + "/Fx.ck");
 Machine.add(lib_path + "/Fx/FxDelay.ck");
+Machine.add(lib_path + "/Fx/FxChorus.ck");
+Machine.add(lib_path + "/Fx/FxReverb.ck");
 Machine.add(lib_path + "/FxManager.ck");
 Machine.add(lib_path + "/Action/ActionFadeIn.ck");
 Machine.add(lib_path + "/Action/ActionFadeOut.ck");

@@ -4,16 +4,12 @@ public class FxDelay extends Fx {
     inputR => echoR => outputR;
 
     fun string idString() {
-        return "ActionDelay";
+        return "FxDelay";
     }
 
     fun void initialise() {
-        <<< "FxDelay.execute() doing stuff" >>>;
-        // SinOsc s;
-        // s.gain( 0.05 );
-        // s => inputL;
-        // s => inputR;
-        // 440 => s.freq;
+        <<< "FxDelay.initialise() doing stuff" >>>;
+        1 => active;
         chooser.getDur( 0.5, 20 ) => dur echoDuration;
         chooser.getDur( 0.02, 0.5 ) => dur leftLength;
         chooser.getDur( 0.02, 0.5 ) => dur rightLength;
@@ -25,14 +21,9 @@ public class FxDelay extends Fx {
         echoR.mix( echoMix );
 
         while ( active ) {
-            // chooser.getInt( 220, 440 ) => s.freq;
+            <<< "FxDelay active" >>>;
             1::second => now;
         }
         <<< "FxDelay.execute(): completing FxDelay" >>>;
-    }
-
-
-    fun void tearDown() {
-        0 => active;
     }
 }

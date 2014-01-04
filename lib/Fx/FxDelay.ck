@@ -21,7 +21,6 @@ public class FxDelay extends Fx {
         echoR.mix( echoMix );
 
         while ( active ) {
-            <<< "FxDelay active" >>>;
             1::second => now;
         }
         <<< "FxDelay.execute(): completing FxDelay" >>>;

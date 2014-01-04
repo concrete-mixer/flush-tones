@@ -13,6 +13,7 @@ public class Fx {
     // sets active to false, so when fx.execute while block
     // next loops, it will shut down
     fun void tearDown() {
+        <<< "calling Fx.tearDown()" >>>;
         0 => active;
     }
 }

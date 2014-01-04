@@ -7,12 +7,13 @@ public class ActionChangeFx extends Action {
 
     fun dur execute( Sample sample ) {
         // determine what to do; if no current effects definitely add one
-        if ( called ) {
-        }
-        else {
+        // if ( called ) {
+        // }
+        // else {
             1 => called;
             fxManager.initialise( sample );
             fxManager.getCurrentFxCount() => int currentFxCount;
+
             if ( ! currentFxCount ) {
                 <<< "no effects currently, adding", called >>>;
                 fxManager.addFx();
@@ -26,7 +27,6 @@ public class ActionChangeFx extends Action {
                 else {
                     // coin toss
                     if ( chooser.getInt( 0, 1 ) ) {
-                        <<< "oh come on" >>>;
                         fxManager.addFx();
                     }
                     else {
@@ -34,6 +34,6 @@ public class ActionChangeFx extends Action {
                     }
                 }
             }
-        }
+        // }
     }
 }

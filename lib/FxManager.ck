@@ -1,45 +1,48 @@
 public class FxManager {
     Chooser chooser;
-    1 => int maxConcurrentFx;
+    2 => int maxConcurrentFx;
     Sample sample;
 
-    Fx @ currentFx[ maxConcurrentFx ];
-    Fx @ fxBattery[1];
+    Fx @ fxChain[ maxConcurrentFx ];
+    Fx @ fxBattery[3];
 
     new FxDelay @=> fxBattery[0];
-    0 => int currentFxCount;
+    new FxChorus @=> fxBattery[1];
+    new FxReverb @=> fxBattery[2];
 
     fun void initialise( Sample inputSample ) {
-        <<< "yoohoo" >>>;
         inputSample @=> sample;
     }
 
     fun void addFx() {
-        <<< "seriously, really?" >>>;
+        // <<< "FxManager.addFx" >>>;
         chooser.getInt( 0, fxBattery.cap() - 1 ) => int i;
-        FxDelay delay;
-        <<< delay.idString() >>>;
+        // 0 => int i;
         // delay @=> fxBattery[0];
-        spork ~ delay.initialise();
-        delay.outputL => dac.left;
-        delay.outputR => dac.right;
-        sample.connect( delay.inputL, delay.inputR );
-        10::second => now;
-        sample.disconnect( delay.outputL, delay.outputR );
-        delay.tearDown();
+        // Fx delay;
+        // fxBattery[i] @=> delay;
+        // <<< delay.idString() >>>;
+        // spork ~ delay.initialise();
+        // delay.outputL => dac.left;
+        // delay.outputR => dac.right;
+        // sample.connect( delay.inputL, delay.inputR );
+        // 10::second => now;
+        // sample.disconnect( delay.outputL, delay.outputR );
+        // delay.tearDown();
         // <<< "fxBattery execution", i, fxBattery[i].idString() >>>;
-        // addToCurrentFx( fxBattery[i] );
+        addToCurrentFx( fxBattery[i] );
     }
 
     fun void removeFx() {
-        getCurrentFxCount() => int currentFxCount;
-        <<< "FxManager.removeFX() currentFxCount:", currentFxCount >>>;
-        if ( currentFxCount ) {
+        getCurrentFxCount() => int fxChainCount;
+        <<< "FxManager.removeFX() fxChainCount:", fxChainCount >>>;
+
+        if ( fxChainCount ) {
+            chooser.getInt( 0, fxChainCount - 1 ) => int i;
             // we can assume that if we have any items we should get rid
             // of the first one (fifo)
-            <<< "FxManager.removeFx(): removing", currentFx[0].idString() >>>;
-            // removeFromCurrentFx( 0 );
-            // currentFx[0].tearDown();
+            // <<< "FxManager.removeFx(): removing", fxChain[i].idString() >>>;
+            removeFromCurrentFx( i );
         }
         else {
             <<< "FxManager.removeFX() nothing to remove" >>>;
@@ -47,76 +50,147 @@ public class FxManager {
     }
 
     fun int getCurrentFxCount() {
-        0 => int currentFxCount;
+        0 => int fxChainCount;
 
-        for( 0 => int i; i < currentFx.cap(); i++ ) {
-            if ( currentFx[i] != NULL ) {
-                <<< "   we have ", currentFx[i].idString() >>>;
-                currentFxCount++;
+        for( 0 => int i; i < fxChain.cap(); i++ ) {
+            if ( fxChain[i] != NULL ) {
+                <<< i, "getCurrentFxCount: we have ", fxChain[i].idString() >>>;
+                fxChainCount++;
             }
         }
 
-        return currentFxCount;
+        // <<< "fxChainCount found:", fxChainCount >>>;
+        return fxChainCount;
     }
 
-    // fun void addToCurrentFx( Fx fx ) {
-    //     for( 0 => int i; i < currentFx.cap(); i++ ) {
-    //         if ( currentFx[i] == NULL ) {
-    //             // <<< "FxManager.addToCurrentFx: inserting", fx.idString() >>>;
-    //             fx @=> currentFx[i];
-    //             addToChain( i, fx );
-    //             return;
-    //         }
-    //     }
-    // }
+    fun void addToCurrentFx( Fx fx ) {
+        for( 0 => int i; i < fxChain.cap(); i++ ) {
+            if ( fxChain[i] == NULL ) {
+                // <<< "FxManager.addToCurrentFx: inserting", fx.idString() >>>;
+                fx @=> fxChain[i];
+                addToChain( i, fx );
+                return;
+            }
+            else if ( fxChain[i].idString() == fx.idString() ) {
+                // <<< "Effect already in use, not applying" >>>;
+                return;
+            }
+        }
+    }
 
-    // fun void removeFromCurrentFx( int i ) {
-    //     Fx @ newCurrentFx[3];
-    //     0 => int j;
+    /*
+        Idenitfying an item to be removed from fxChain,
+        we copy the rest of the chain to a new array
+        and then replace the original way
 
-    //     for( 0 => int k; k < currentFx.cap(); k++ ) {
-    //         if ( k != i ) {
-    //             currentFx[i] @=> newCurrentFx[j];
-    //             j++;
-    //         }
-    //         else {
-    //             removeFromChain( i );
-    //         }
-    //     }
+        This seems a bit primitive but this may more how things
+        are done in C/C++ land
 
-    //     newCurrentFx @=> currentFx;
-    // }
+        In any event I haven't found a better way to do this
+        Perl grep would be handy about now...
+    */
+    fun void removeFromCurrentFx( int i ) {
+        <<< "removeFromCurrentFx" >>>;
+        <<< "   i: ", i >>>;
+        Fx @ newFxChain[ maxConcurrentFx ];
+        0 => int j;
+        fxChain[ i ] @=> Fx fx;
 
-    // fun void addToChain( int i, Fx newFx ) {
-    //     // spork ~ newFx.initialise();
-    //     <<< "bark" >>>;
-    //     delay.initialise();
+        for( 0 => int k; k < fxChain.cap(); k++ ) {
+            if ( k != i ) {
+                fxChain[k] @=> newFxChain[j];
+                j++;
+            }
+        }
+        // getCurrentFxCount();
+        newFxChain @=> fxChain;
+        removeFromChain( i, fx );
+    }
 
-    //     if ( i == 0 ) {
-    //         <<< "FxManager.currentFx(): i==0" >>>;
-    //         // sample.connect( newFx.inputL, newFx.inputR );
-    //         // newFx.outputL => dac.left;
-    //         // newFx.outputR => dac.right;
-    //         sample.connect( delay.inputL, delay.inputR );
-    //         delay.outputL => dac.left;
-    //         delay.outputR => dac.right;
-    //     }
-    //     else {
-    //         <<< "FxManager.currentFx(): ", newFx.idString() >>>;
-    //         // we need to get i - 1's out and plug in to
-    //         // i's input
-    //         // are you keeping up?
-    //         currentFx[ i - 1 ] @=> Fx previousFx;
-    //         previousFx.outputL =< dac.left;
-    //         previousFx.outputR =< dac.right;
-    //         // sample.disconnect( previousFx.inputL, previousFx.inputR );
-    //         // previousFx.outputL => newFx.inputL;
-    //         // previousFx.outputR => newFx.inputR;
-    //         sample.disconnect( delay.inputL, delay.inputR );
-    //     }
-    // }
+    fun void addToChain( int i, Fx newFx ) {
+        // spork ~ newFx.initialise();
+        spork ~ newFx.initialise();
+        <<< "addToChain() adding", newFx.idString(), "key", i >>>;
 
-    // fun void removeFromChain( int i ) {
-    //     // likewise
-    // }
+        if ( i == 0 ) {
+            <<< "   i==0" >>>;
+            // sample.connect( newFx.inputL, newFx.inputR );
+            // newFx.outputL => dac.left;
+            // newFx.outputR => dac.right;
+            sample.connect( newFx.inputL, newFx.inputR );
+        }
+        else {
+            <<< "  i > 0, ", i >>>;
+            // we need to get i - 1's out and plug in to
+            // i's input
+            // are you keeping up?
+            fxChain[ i - 1 ] @=> Fx upstreamFx;
+            // <<< "   PREEVIOUS", upstreamFx.idString() >>>;
+            upstreamFx.outputL =< dac.left;
+            upstreamFx.outputR =< dac.right;
+
+            upstreamFx.outputL => newFx.inputL;
+            upstreamFx.outputR => newFx.inputR;
+        }
+
+        newFx.outputL => dac.left;
+        newFx.outputR => dac.right;
+
+        10::second => now;
+    }
+
+    fun void removeFromChain( int i, Fx fx ) {
+        Fx upstreamFx, downstreamFx;
+        0 => int deleteFromDac;
+        0 => int downstreamPresent;
+
+        if ( i < ( maxConcurrentFx - 1 ) && fxChain[ i + 1 ] != NULL ) {
+            fxChain[ i + 1 ] @=> downstreamFx;
+            1 => downstreamPresent;
+        }
+        <<< downstreamPresent >>>;
+
+        if ( i == 0 ) {
+            <<< "   i==0" >>>;
+            sample.disconnect( fx.inputL, fx.inputR );
+
+            // work out how what to disconnect from output wise
+            if ( downstreamPresent ) {
+                <<< "   disconnecting from downstream 1" >>>;
+                fx.outputL =< downstreamFx.inputL;
+                fx.outputR =< downstreamFx.inputR;
+            }
+            else {
+                <<< "   deleteFromDac set 1" >>>;
+                1 => deleteFromDac;
+            }
+        }
+        else {
+            // we've got something in the chain behind us, so
+            // disconnect from that
+            <<< "   i != 0" >>>;
+            fxChain[ i - 1 ] @=> Fx upstreamFx;
+
+            upstreamFx.outputL =< fx.inputL;
+            upstreamFx.outputR =< fx.inputR;
+
+            if ( downstreamPresent ) {
+                <<< "   disconnecting from downstream 2" >>>;
+                fx.outputL =< downstreamFx.inputL;
+                fx.outputR =< downstreamFx.inputR;
+            }
+            else {
+                <<< "   deleteFromDac set 2" >>>;
+                1 => deleteFromDac;
+            }
+        }
+
+        if ( deleteFromDac ) {
+            // disconnect from dac
+            fx.outputL =< dac.left;
+            fx.outputR =< dac.right;
+        }
+
+        // fx.tearDown();
+    }
 }

@@ -1,10 +1,12 @@
 public class Sample {
-    // Panner p;
+    Panner panner;
     Fader fader;
     "out" => string fadeState;
+    1 => int active;
 
     // use PainGain's gain by default
     SndBuf buf1, buf2;
+    Pan2 panL, panR;
     1 => int channelCount;
 
     fun void initialise(string filepath, int loop) {
@@ -14,7 +16,7 @@ public class Sample {
 
         buf1.read(filepath);
         0 => buf1.gain;
-        buf1 => dac.left;
+        buf1 => panL => dac;
 
         buf1.channels() => channelCount;
 
@@ -29,7 +31,7 @@ public class Sample {
             // bring in another buf
             buf2.read(filepath);
             0 => buf2.gain;
-            buf2 => dac.right;
+            buf2 => panR => dac;
 
             // set buf1 to use left channel and buf2 to use right
             0 => buf1.channel;
@@ -39,8 +41,11 @@ public class Sample {
             loop => buf2.loop;
         }
         else {
-            buf1 => dac.right;
+            buf1 => panR => dac;
         }
+
+        // set pan model
+        spork ~ panner.initialise( panL, panR );
     }
 
     fun void changeFade( string targetState, dur fadeTime ) {
@@ -86,31 +91,31 @@ public class Sample {
 
     fun void connect( Gain inputL, Gain inputR ) {
         <<< "Sample.connect(): running" >>>;
-        buf1 =< dac.left;
-        buf1 => inputL;
+        panL =< dac;
+        panL => inputL;
 
         if ( channelCount == 2 ) {
-            buf2 =< dac.right;
-            buf2 => inputR;
+            panR =< dac;
+            panR => inputR;
         }
         else {
-            buf1 => inputR;
-            buf1 =< dac.right;
+            panR => inputR;
+            panR =< dac;
         }
     }
 
     fun void disconnect( Gain outputL, Gain outputR ) {
         <<< "disconnecting" >>>;
-        buf1 =< outputL;
-        buf1 => dac.left;
+        panL =< outputL;
+        panL => dac;
 
         if ( channelCount == 2 ) {
-            buf2 =< outputR;
-            buf2 => dac.right;
+            panR =< outputR;
+            panR => dac;
         }
         else {
-            buf1 =< outputR;
-            buf1 => dac.right;
+            panR =< outputR;
+            panR => dac;
         }
     }
 
@@ -130,6 +135,10 @@ public class Sample {
 
     fun int getSampleCount() {
         return buf1.samples();
+    }
+
+    fun void tearDown() {
+        panner.tearDown();
     }
 }
 

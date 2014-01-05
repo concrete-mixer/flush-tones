@@ -1,53 +1,92 @@
 public class Panner extends LFO {
-    Chooser c;
+    Chooser chooser;
     10 => int actionDenominator;
     5.0 => float waitMin;
     15 => float waitMax;
+    [ "normal", "reverse", "mono", "fixed point", "scramble", "LFO" ] @=> string panTypes[];
+    1 => int active;
+
     Pan2 panL, panR;
 
-    panL => dac;
-    panR => dac;
-
-    fun void initialise( SndBuf buf1 ) {
-        buf1 => panL;
-        buf1 => panR;
+    fun void initialise( Pan2 inputPanL, Pan2 inputPanR ) {
+        return;
+        inputPanL @=> panL;
+        inputPanR @=> panR;
+        setType();
     }
 
-    fun void initialise( SndBuf buf1, SndBuf buf2 ) {
-        buf1 => panL;
-        buf2 => panR;
-    }
-
-    // the following should be overwritten by mono and stereo child classes
-    fun void resetPan() {
-        -1.0 => panL.pan;
-        1.0 => panL.pan;
-    }
-
-    fun void setPan( float position ) {
-        position => panL.pan;
-        position => panR.pan;
-    }
-
-    fun void changePan( float freq, float amount, dur panDuration, string oscType ) {
-        while ( panDuration > 0::second ) {
-            setPan( osc( freq, amount, oscType ) );
-            1 :: ms -=> panDuration;
-            1 :: ms => now;
+    fun void setType() {
+        chooser.getInt( 0, panTypes.cap() - 1 ) => int i;
+        // panTypes[ i ] => string panType;
+        panTypes[ 5 ] => string panType;
+        <<< "pan type", panType >>>;
+        // this follows normal two channel stereo: all of one channel
+        // to left speaker, and all of the other to right speaker
+        if ( panType == "normal" ) {
+            setPan( panL, -1.0 );
+            setPan( panL, 1.0 );
         }
 
-        resetPan();
+        // this sets both right and left channel to a single pan position
+        // somewhere between hard left and hard right
+        if ( panType == "reverse" ) {
+            setPan( panL, 1.0 );
+            setPan( panR, -1.0 );
+        }
+
+        if ( panType == "mono" ) {
+            setPan( panL, 0 );
+            setPan( panR, 0 );
+        }
+
+        // this sets the pan to an arbitary position between left and right
+        if ( panType == "fixed point" ) {
+            chooser.getFloat( -1.0, 1.0 ) => float position;
+
+            setPan( panL, position );
+            setPan( panR, position );
+        }
+
+        // sets arbitrary pan positions for both channels
+        // (two different fixed points rather than one)
+        // (a kind of vaguer version of "reverse" and "mono" and "fixed point"
+        if ( panType == "scramble" ) {
+            chooser.getFloat( -1.0, 1.0 ) => float leftPosition;
+            chooser.getFloat( -1.0, 1.0 ) => float rightPosition;
+
+            setPan( panL, leftPosition );
+            setPan( panR, leftPosition );
+        }
+
+        // finally, apply dynamic pan based on LFO
+        if ( panType == "LFO" ) {
+            makeLFOPan();
+        }
     }
 
-    fun void makePan() {
-        // need the 
-        c.getFloat( 0.05, 5 ) => float freq;
-        c.getFloat( 0, 1.0 ) => float amount;
-        c.getDur( 5, 60 ) => dur panDuration;
-        getOscType() => string oscType;
-        <<< "PanGain running changePan(): freq ", freq, " amount ", amount, " duration ", panDuration, " oscillator type ", oscType >>>;
+    fun void setPan( Pan2 pan, float position ) {
+        position => pan.pan;
+    }
 
-        changePan( freq, amount, panDuration, oscType );
+    fun void changePan( float freq, float amount, string oscType ) {
+        while ( active ) {
+            osc( freq, amount, oscType ) => float position;
+            setPan( panL, position );
+            setPan( panR, position );
+            100 :: ms => now;
+        }
+    }
+
+    fun void makeLFOPan() {
+        chooser.getFloat( 0.05, 5 ) => float freq;
+        chooser.getFloat( 0.2, 1.0 ) => float amount;
+        getOscType() => string oscType;
+        <<< "PanGain running changePan(): freq", freq, "amount", amount, "duration", "oscillator type", oscType >>>;
+        changePan( freq, amount, oscType );
+    }
+
+    fun void tearDown() {
+        0 => active;
     }
 }
 

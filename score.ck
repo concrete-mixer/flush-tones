@@ -1,15 +1,15 @@
 me.dir() => string path;
 
-fun void initSample(string filepath, int loop, dur scheduleInterval ) {
+fun void initSample(string filepath, int loop ) {
     Sample sample;
     sample.initialise(filepath, 1 );
-    ActionScheduler schedule;
-    schedule.initialise(sample, scheduleInterval );
+    SampleController controller;
+    controller.initialise( sample );
 }
 
-spork ~ initSample(path + "audio/santorini_cistern.wav", 1, 10::second );
+spork ~ initSample(path + "audio/santorini_cistern.wav", 1 );
 
-// sampleTest();
+// spork ~ sampleTest();
 
 fun void sampleTest() {
     Sample sample;
@@ -24,5 +24,5 @@ fun void sampleTest() {
 
 // keep things ticking over
 while ( true ) {
-    1::second => now;
+    5::second => now;
 }

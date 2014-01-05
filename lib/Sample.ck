@@ -127,5 +127,9 @@ public class Sample {
             buf2.rate( rate );
         }
     }
+
+    fun int getSampleCount() {
+        return buf1.samples();
+    }
 }
 

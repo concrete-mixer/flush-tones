@@ -8,6 +8,10 @@ fun void initSample(string filepath, int loop ) {
 }
 
 spork ~ initSample(path + "audio/santorini_cistern.wav", 1 );
+20::second => now;
+spork ~ initSample(path + "audio/drip-no-hum-full.wav", 1 );
+20::second => now;
+spork ~ initSample(path + "audio/flush-short.wav", 1 );
 
 // spork ~ sampleTest();
 

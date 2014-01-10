@@ -1,6 +1,6 @@
 public class FxManager {
     Chooser chooser;
-    1 => int maxConcurrentFx;
+    3 => int maxConcurrentFx;
     Sample sample;
 
     Fx @ fxChain[ maxConcurrentFx ];

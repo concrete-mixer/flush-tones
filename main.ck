@@ -14,4 +14,5 @@ Machine.add(lib_path + "/Action/ActionFadeIn.ck");
 Machine.add(lib_path + "/Action/ActionFadeOut.ck");
 Machine.add(lib_path + "/Action/ActionSampleReverse.ck");
 Machine.add(lib_path + "/SampleController.ck");
+Machine.add(lib_path + "/SampleCollection.ck");
 Machine.add("score.ck");

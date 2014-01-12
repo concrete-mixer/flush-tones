@@ -6,12 +6,11 @@ public class Panner extends LFO {
     [ "normal", "reverse", "mono", "fixed point", "scramble", "LFO" ] @=> string panTypes[];
     1 => int active;
 
-    Pan2 panL, panR;
+    Pan2 pan;
 
-    fun void initialise( Pan2 inputPanL, Pan2 inputPanR ) {
+    fun void initialise( Pan2 inputPan ) {
         return;
-        inputPanL @=> panL;
-        inputPanR @=> panR;
+        inputPan @=> pan;
         setType();
     }
 
@@ -22,40 +21,14 @@ public class Panner extends LFO {
         <<< "pan type", panType >>>;
         // this follows normal two channel stereo: all of one channel
         // to left speaker, and all of the other to right speaker
-        if ( panType == "normal" ) {
-            setPan( panL, -1.0 );
-            setPan( panL, 1.0 );
-        }
-
-        // this sets both right and left channel to a single pan position
-        // somewhere between hard left and hard right
-        if ( panType == "reverse" ) {
-            setPan( panL, 1.0 );
-            setPan( panR, -1.0 );
-        }
-
         if ( panType == "mono" ) {
-            setPan( panL, 0 );
-            setPan( panR, 0 );
+            setPan( pan, 0 );
         }
 
         // this sets the pan to an arbitary position between left and right
         if ( panType == "fixed point" ) {
             chooser.getFloat( -1.0, 1.0 ) => float position;
-
-            setPan( panL, position );
-            setPan( panR, position );
-        }
-
-        // sets arbitrary pan positions for both channels
-        // (two different fixed points rather than one)
-        // (a kind of vaguer version of "reverse" and "mono" and "fixed point"
-        if ( panType == "scramble" ) {
-            chooser.getFloat( -1.0, 1.0 ) => float leftPosition;
-            chooser.getFloat( -1.0, 1.0 ) => float rightPosition;
-
-            setPan( panL, leftPosition );
-            setPan( panR, leftPosition );
+            setPan( pan, position );
         }
 
         // finally, apply dynamic pan based on LFO
@@ -71,8 +44,7 @@ public class Panner extends LFO {
     fun void changePan( float freq, float amount, string oscType ) {
         while ( active ) {
             osc( freq, amount, oscType ) => float position;
-            setPan( panL, position );
-            setPan( panR, position );
+            setPan( pan, position );
             100 :: ms => now;
         }
     }

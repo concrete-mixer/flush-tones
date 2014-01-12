@@ -1,7 +1,6 @@
 public class FxDelay extends Fx {
-    Echo echoL, echoR;
-    inputL => echoL => outputL;
-    inputR => echoR => outputR;
+    Echo echo;
+    input => echo => output;
 
     fun string idString() {
         return "FxDelay";
@@ -15,10 +14,8 @@ public class FxDelay extends Fx {
         chooser.getDur( 0.02, 0.5 ) => dur rightLength;
         chooser.getFloat( 0.2, 0.8 ) => float echoMix;
 
-        echoL.delay( leftLength );
-        echoR.delay( rightLength );
-        echoL.mix( echoMix );
-        echoR.mix( echoMix );
+        echo.delay( leftLength );
+        echo.mix( echoMix );
 
         while ( active ) {
             1::second => now;

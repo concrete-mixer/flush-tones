@@ -50,17 +50,15 @@ public class FxManager {
             spork ~ fx.initialise();
 
             if ( i == 0 ) {
-                sample.connect( fx.inputL, fx.inputR );
+                sample.connect( fx.input );
             }
             else {
                 fxChain[ i - 1 ] @=> Fx upstreamFx;
-                upstreamFx.outputL => fx.inputL;
-                upstreamFx.outputR => fx.inputR;
+                upstreamFx.output => fx.input;
             }
 
             if ( i == fxChain.cap() - 1 ) {
-                fx.outputL => dac.left;
-                fx.outputR => dac.right;
+                fx.output => dac;
             }
         }
     }

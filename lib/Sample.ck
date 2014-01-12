@@ -5,8 +5,8 @@ public class Sample {
     1 => int active;
 
     // use PainGain's gain by default
-    SndBuf buf1, buf2;
-    Pan2 panL, panR;
+    SndBuf buf;
+    Pan2 pan;
     1 => int channelCount;
 
     fun void initialise(string filepath, int loop) {
@@ -14,38 +14,19 @@ public class Sample {
         // sndbuf should be mono or stereo. See
         // https://lists.cs.princeton.edu/pipermail/chuck-users/2010-November/005864.html
 
-        buf1.read(filepath);
-        0 => buf1.gain;
-        buf1 => panL => dac;
-
-        buf1.channels() => channelCount;
+        buf.read(filepath);
+        0 => buf.gain;
+        buf => pan => dac;
 
         // if channel number is 1, easy, just plug bufM to PanGain
         if ( channelCount == 1 ) {
-            loop => buf1.loop;
+            loop => buf.loop;
         }
 
         // if two channels, we need to bring two SndBufs into play and route
         // one each to a pan
-        if ( channelCount == 2 ) {
-            // bring in another buf
-            buf2.read(filepath);
-            0 => buf2.gain;
-            buf2 => panR => dac;
 
-            // set buf1 to use left channel and buf2 to use right
-            0 => buf1.channel;
-            1 => buf2.channel;
-
-            loop => buf1.loop;
-            loop => buf2.loop;
-        }
-        else {
-            buf1 => panR => dac;
-        }
-
-        // set pan model
-        spork ~ panner.initialise( panL, panR );
+        spork ~ panner.initialise( pan );
     }
 
     fun void changeFade( string targetState, dur fadeTime ) {
@@ -59,13 +40,9 @@ public class Sample {
         }
 
         while( fadeTime > 0::second ) {
-            buf1.gain() => float currGain;
+            buf.gain() => float currGain;
             currGain + gainIncrement => float newGain;
-            newGain => buf1.gain;
-
-            if ( channelCount == 2 ) {
-                newGain => buf2.gain;
-            }
+            newGain => buf.gain;
 
             timeIncrement -=> fadeTime;
             timeIncrement => now;
@@ -82,41 +59,19 @@ public class Sample {
             0.8 => vol;
         }
 
-        vol => buf1.gain;
-
-        if ( channelCount == 2 ) {
-            vol => buf2.gain;
-        }
+        vol => buf.gain;
     }
 
-    fun void connect( Gain inputL, Gain inputR ) {
+    fun void connect( Gain input ) {
         <<< "Sample.connect(): running" >>>;
-        panL =< dac;
-        panL => inputL;
-
-        if ( channelCount == 2 ) {
-            panR =< dac;
-            panR => inputR;
-        }
-        else {
-            panR => inputR;
-            panR =< dac;
-        }
+        pan =< dac;
+        pan => input;
     }
 
-    fun void disconnect( Gain outputL, Gain outputR ) {
+    fun void disconnect( Gain output ) {
         <<< "disconnecting" >>>;
-        panL =< outputL;
-        panL => dac;
-
-        if ( channelCount == 2 ) {
-            panR =< outputR;
-            panR => dac;
-        }
-        else {
-            panR =< outputR;
-            panR => dac;
-        }
+        pan =< output;
+        pan => dac;
     }
 
     fun void reverse( dur duration) {
@@ -126,15 +81,11 @@ public class Sample {
     }
 
     fun void setRate( float rate ) {
-        buf1.rate( rate );
-
-        if ( channelCount == 2 ) {
-            buf2.rate( rate );
-        }
+        buf.rate( rate );
     }
 
     fun int getSampleCount() {
-        return buf1.samples();
+        return buf.samples();
     }
 
     fun void tearDown() {

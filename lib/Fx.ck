@@ -2,7 +2,7 @@ public class Fx {
     Chooser chooser;
     1 => int active;
 
-    Gain inputL, inputR, outputL, outputR;
+    Gain input, output;
 
     fun string idString() { return "Fx"; }
 

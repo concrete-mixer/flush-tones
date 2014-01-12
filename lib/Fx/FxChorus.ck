@@ -1,8 +1,7 @@
 public class FxChorus extends Fx {
-    Chorus chorusL, chorusR;
+    Chorus chorus;
 
-    inputL => chorusL => outputL;
-    inputR => chorusR => outputR;
+    input => chorus => output;
 
     fun string idString() { return "FxChorus"; }
 
@@ -10,15 +9,19 @@ public class FxChorus extends Fx {
         1 => active;
 
         chooser.getFloat( 0.1, 4 ) => float freq;
-        chooser.getFloat( 0.3, 0.6 ) => float depth;
+        float depth;
+
+        if ( freq < 2 ) {
+            chooser.getFloat( 0.3, 0.6 ) => float depth;
+        }
+        else {
+            chooser.getFloat( 0.1, 0.3 ) => float depth;
+        }
+
         chooser.getFloat( 0.3, 0.8 ) => float mix;
 
-        freq => chorusL.modFreq;
-        depth => chorusL.modDepth;
-        mix => chorusL.mix;
-
-        freq => chorusR.modFreq;
-        depth => chorusR.modDepth;
-        mix => chorusR.mix;
+        freq => chorus.modFreq;
+        depth => chorus.modDepth;
+        mix => chorus.mix;
     }
 }

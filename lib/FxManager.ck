@@ -1,6 +1,6 @@
 public class FxManager {
     Chooser chooser;
-    3 => int maxConcurrentFx;
+    2 => int maxConcurrentFx;
     Sample sample;
 
     Fx @ fxChain[ maxConcurrentFx ];
@@ -58,7 +58,7 @@ public class FxManager {
             }
 
             if ( i == fxChain.cap() - 1 ) {
-                fx.output => dac;
+                fx.output => sample.pan;
             }
         }
     }

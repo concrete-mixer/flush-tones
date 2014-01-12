@@ -16,8 +16,8 @@ public class Sample {
 
         buf.read(filepath);
         0 => buf.gain;
-        buf => pan => dac;
-
+        buf;
+        pan => dac;
         // if channel number is 1, easy, just plug bufM to PanGain
         if ( channelCount == 1 ) {
             loop => buf.loop;
@@ -64,14 +64,12 @@ public class Sample {
 
     fun void connect( Gain input ) {
         <<< "Sample.connect(): running" >>>;
-        pan =< dac;
-        pan => input;
+        buf => input;
     }
 
     fun void disconnect( Gain output ) {
         <<< "disconnecting" >>>;
         pan =< output;
-        pan => dac;
     }
 
     fun void reverse( dur duration) {

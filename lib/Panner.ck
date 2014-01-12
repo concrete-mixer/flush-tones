@@ -3,27 +3,20 @@ public class Panner extends LFO {
     10 => int actionDenominator;
     5.0 => float waitMin;
     15 => float waitMax;
-    [ "normal", "reverse", "mono", "fixed point", "scramble", "LFO" ] @=> string panTypes[];
+    [ "fixed point", "LFO" ] @=> string panTypes[];
     1 => int active;
 
     Pan2 pan;
 
     fun void initialise( Pan2 inputPan ) {
-        return;
         inputPan @=> pan;
         setType();
     }
 
     fun void setType() {
         chooser.getInt( 0, panTypes.cap() - 1 ) => int i;
-        // panTypes[ i ] => string panType;
-        panTypes[ 5 ] => string panType;
+        panTypes[ i ] => string panType;
         <<< "pan type", panType >>>;
-        // this follows normal two channel stereo: all of one channel
-        // to left speaker, and all of the other to right speaker
-        if ( panType == "mono" ) {
-            setPan( pan, 0 );
-        }
 
         // this sets the pan to an arbitary position between left and right
         if ( panType == "fixed point" ) {

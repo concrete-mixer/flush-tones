@@ -5,28 +5,29 @@ public class Sample {
     1 => int active;
 
     // use PainGain's gain by default
-    SndBuf buf;
+    WvIn sample;
     Pan2 pan;
+    Gain out;
     1 => int channelCount;
 
     fun void initialise(string filepath, int loop) {
-        // here we need to work out number of channels and whether
-        // sndbuf should be mono or stereo. See
-        // https://lists.cs.princeton.edu/pipermail/chuck-users/2010-November/005864.html
-
-        buf.read(filepath);
-        0 => buf.gain;
-        buf;
-        pan => dac;
-        // if channel number is 1, easy, just plug bufM to PanGain
-        if ( channelCount == 1 ) {
-            loop => buf.loop;
+        if ( loop ) {
+            WaveLoop wave;
+            wave.path( filepath );
+            wave @=> sample;
+        }
+        else {
+            sample.path( filepath );
         }
 
-        // if two channels, we need to bring two SndBufs into play and route
-        // one each to a pan
+        0.7 => sample.gain;
+        sample => out => pan => dac;
 
         spork ~ panner.initialise( pan );
+
+        while ( true ) {
+            1::second => now;
+        }
     }
 
     fun void changeFade( string targetState, dur fadeTime ) {
@@ -40,16 +41,15 @@ public class Sample {
         }
 
         while( fadeTime > 0::second ) {
-            buf.gain() => float currGain;
+            sample.gain() => float currGain;
             currGain + gainIncrement => float newGain;
-            newGain => buf.gain;
+            newGain => sample.gain;
 
             timeIncrement -=> fadeTime;
             timeIncrement => now;
         }
 
         targetState => fadeState;
-        <<< "fadeState", fadeState >>>;
     }
 
     fun void setVol( float vol ) {
@@ -59,17 +59,7 @@ public class Sample {
             0.8 => vol;
         }
 
-        vol => buf.gain;
-    }
-
-    fun void connect( Gain input ) {
-        <<< "Sample.connect(): running" >>>;
-        buf => input;
-    }
-
-    fun void disconnect( Gain output ) {
-        <<< "disconnecting" >>>;
-        pan =< output;
+        vol => sample.gain;
     }
 
     fun void reverse( dur duration) {
@@ -79,11 +69,7 @@ public class Sample {
     }
 
     fun void setRate( float rate ) {
-        buf.rate( rate );
-    }
-
-    fun int getSampleCount() {
-        return buf.samples();
+        sample.rate( rate );
     }
 
     fun void tearDown() {

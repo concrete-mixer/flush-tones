@@ -1,31 +1,27 @@
 me.dir() => string path;
+Chooser chooser;
 
-fun void initSample(string filepath, int loop ) {
+FxManager fxManager;
+fxManager.initialise();
+
+fun void initSample(string filepath, int loop, float vol ) {
     Sample sample;
-    sample.initialise(filepath, loop );
-    SampleController controller;
-    controller.initialise( sample );
+    ActionFadeIn fadeIn;
+    if ( chooser.getInt( 1, 1 ) ) {
+        <<< "hurf" >>>;
+        fxManager.connect( sample.out );
+    }
+
+    spork ~ sample.initialise(filepath, loop );
+    fadeIn.execute( sample );
 }
 
-spork ~ initSample(path + "audio/santorini_cistern.wav", 1 );
-20::second => now;
-spork ~ initSample(path + "audio/drip-no-hum-full.wav", 1 );
-20::second => now;
-spork ~ initSample(path + "audio/flush-short.wav", 0 );
-
-// spork ~ sampleTest();
-
-fun void sampleTest() {
-    Sample sample;
-    sample.initialise( path + "audio/santorini_cistern.wav", 1 );
-    FxDelay delay;
-    spork ~ delay.initialise();
-    sample.connect( delay.input );
-    delay.output => dac;
-    sample.changeFade( "in", 10::second );
-}
+initSample(path + "audio/santorini_cistern.wav", 1, '0.7' );
+initSample(path + "audio/drip-no-hum-full.wav", 1, '0.7' );
+initSample(path + "audio/flush-short.wav", 0, '0.2' );
 
 // keep things ticking over
 while ( true ) {
+    <<< "ping..." >>>;
     5::second => now;
 }

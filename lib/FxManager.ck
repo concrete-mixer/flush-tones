@@ -1,19 +1,29 @@
 public class FxManager {
     Chooser chooser;
-    2 => int maxConcurrentFx;
-    Sample sample;
+    Panner panner;
+    3 => int maxConcurrentFx;
+    Gain inputGain;
+    0.5 => inputGain.gain;
+    Pan2 outputPan;
+    0.5 => outputPan.gain;
+
+    // spork ~ panner.initialise(outputPan);
+    outputPan => dac;
 
     Fx @ fxChain[ maxConcurrentFx ];
     Fx @ fxBattery[3];
 
-    fun void initialise( Sample inputSample ) {
-        inputSample @=> sample;
-
+    fun void initialise() {
         new FxDelay @=> fxBattery[0];
         new FxChorus @=> fxBattery[1];
         new FxReverb @=> fxBattery[2];
 
         fxChainBuild();
+    }
+
+    fun void connect( UGen gen ) {
+        <<< "begorrah" >>>;
+        gen => inputGain;
     }
 
     fun void fxChainBuild() {
@@ -50,7 +60,7 @@ public class FxManager {
             spork ~ fx.initialise();
 
             if ( i == 0 ) {
-                sample.connect( fx.input );
+                inputGain => fx.input;
             }
             else {
                 fxChain[ i - 1 ] @=> Fx upstreamFx;
@@ -58,7 +68,7 @@ public class FxManager {
             }
 
             if ( i == fxChain.cap() - 1 ) {
-                fx.output => sample.pan;
+                fx.output => outputPan;
             }
         }
     }

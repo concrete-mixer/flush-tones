@@ -9,8 +9,9 @@ public class Sample {
     Pan2 pan;
     Gain out;
     1 => int channelCount;
+    0.8 => float maxGain;
 
-    fun void initialise(string filepath, int loop) {
+    fun void initialise(string filepath, int loop, float vol ) {
         if ( loop ) {
             WaveLoop wave;
             wave.path( filepath );
@@ -20,9 +21,10 @@ public class Sample {
             sample.path( filepath );
         }
 
-        0.7 => sample.gain;
+        vol => maxGain;
+        vol => sample.gain;
         sample => out => pan => dac;
-
+        <<< sample.gain >>>;
         spork ~ panner.initialise( pan );
 
         while ( true ) {

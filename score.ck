@@ -11,13 +11,11 @@ fxManager.initialise( dynoL, dynoR );
 
 fun void initSample(string filepath, int loop, float gain, UGen leftOut, UGen rightOut ) {
     Sample sample;
-    ActionFadeIn fadeIn;
     if ( chooser.getInt( 1, 1 ) ) {
         fxManager.connect( sample.out );
     }
 
     spork ~ sample.initialise( filepath, loop, gain, leftOut, rightOut );
-    fadeIn.execute( sample );
 }
 
 initSample(path + "audio/santorini_cistern.wav", 1, 0.5, dynoL, dynoR );

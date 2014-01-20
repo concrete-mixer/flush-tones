@@ -3,34 +3,38 @@ public class Sample {
     Fader fader;
     "out" => string fadeState;
     1 => int active;
+    Chooser chooser;
 
     // use PainGain's gain by default
-    WvIn sample;
+    SndBuf sample;
     Pan2 pan;
     Gain out;
     0.5 => float maxGain;
 
-    fun void initialise(string filepath, int loop, float vol, UGen outputLeft, UGen outputRight ) {
-        if ( loop ) {
-            WaveLoop wave;
-            wave.path( filepath );
-            wave @=> sample;
-        }
-        else {
-            sample.path( filepath );
-        }
+    fun void initialise(string filepath, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
+        sample.loop( loop );
+        sample.read( filepath );
 
-        vol => maxGain;
-        vol => sample.gain;
+        endGain => maxGain;
+        0 => sample.gain;
         sample => out => pan;
         pan.left => outputLeft; // left
         pan.right => outputRight; // right
         <<< sample.gain >>>;
         spork ~ panner.initialise( pan );
 
+        fadeIn( endGain );
+
         while ( true ) {
             1::second => now;
         }
+    }
+
+    fun dur fadeIn( float gain ) {
+        chooser.getDur( 2, 7 ) => dur fadeTime;
+        "in" => string fadeState;
+        changeFade( fadeState, fadeTime );
+        return fadeTime;
     }
 
     fun void changeFade( string targetState, dur fadeTime ) {

@@ -30,6 +30,12 @@ public class Panner extends LFO {
         }
     }
 
+    fun string getOscType() {
+        [ "sine", "square" ] @=> string oscTypes[];
+
+        return oscTypes[ chooser.getInt( 0, oscTypes.cap() - 1 ) ];
+    }
+
     fun void setPan( Pan2 pan, float position ) {
         position => pan.pan;
     }
@@ -42,10 +48,23 @@ public class Panner extends LFO {
         }
     }
 
+    // set LFO type and generate LFO frequencies and amounts for panning
     fun void makeLFOPan() {
-        chooser.getFloat( 0.05, 5 ) => float freq;
-        chooser.getFloat( 0.2, 1.0 ) => float amount;
         getOscType() => string oscType;
+        float freq;
+        float amount;
+
+        // sine pans work better slower, while square wave pans work
+        // better faster but shallower, so we need to tweak a bit
+        if ( oscType == "sine" ) {
+            chooser.getFloat( 0.05, 0.25 ) => freq;
+            chooser.getFloat( 0.5, 1.0 ) => amount;
+        }
+
+        if ( oscType == "square" ) {
+            chooser.getFloat( 0.5, 5 ) => freq;
+            chooser.getFloat( 0.2, 0.5 ) => amount;
+        }
         <<< "PanGain running changePan(): freq", freq, "amount", amount, "duration", "oscillator type", oscType >>>;
         changePan( freq, amount, oscType );
     }

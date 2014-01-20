@@ -116,8 +116,8 @@ class WaveBank {
         buf.length() => now;
 
         buf =< pan;
-        pan =< dynoL;
-        pan =< dynoR;
+        pan.left =< dynoL;
+        pan.right =< dynoR;
         <<< "no longer playing sound" >>>;
 
         if ( fxOn ) {

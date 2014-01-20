@@ -1,13 +1,14 @@
 public class FxManager {
     Chooser chooser;
     Panner panner;
-    3 => int maxConcurrentFx;
+    2 => int maxConcurrentFx;
     Gain inputGain;
     0.8 => inputGain.gain;
     Pan2 outputPan;
     0.8 => outputPan.gain;
 
-    // spork ~ panner.initialise(outputPan);
+    <<< "panner initialise for fx chain" >>>;
+    spork ~ panner.initialise(outputPan);
     Fx @ fxChain[ maxConcurrentFx ];
     Fx @ fxBattery[3];
 

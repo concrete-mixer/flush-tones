@@ -1,13 +1,13 @@
 public class SampleController {
-    Chooser chooser;
+    // Chooser chooser;
 
-    ActionFadeIn fadeIn;
-    ActionFadeOut fadeOut;
-    FxManager fxManager;
+    // ActionFadeIn fadeIn;
+    // ActionFadeOut fadeOut;
+    // FxManager fxManager;
 
     fun void initialise( Sample sample ) {
         // fxManager.initialise( sample );
-        fadeIn.execute( sample );
+        // fadeIn.execute( sample );
         // interval => now;
         // fadeOut.execute( sample );
         // 0 => sample.active;

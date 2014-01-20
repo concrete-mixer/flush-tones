@@ -1,6 +1,6 @@
 public class LFO {
     string oscTypes[];
-    [ "sine", "square" ] @=> oscTypes;
+    [ "sine", "square", "sampleHold" ] @=> oscTypes;
 
     fun string getOscType() {
         Std.rand2( 0, oscTypes.cap() - 1 ) => int key;

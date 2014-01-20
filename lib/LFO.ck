@@ -1,4 +1,5 @@
 public class LFO {
+    Chooser chooser;
     string oscTypes[];
     [ "sine", "square", "sampleHold" ] @=> oscTypes;
 
@@ -38,10 +39,17 @@ public class LFO {
 
     // sample and hold oscillator
     fun float sampleHoldOsc( float amount ) {
-        return Std.randf();
+        // halve to get range above and below the basefreq (note sine LFO
+        // does this automatically as part of being a sine function)
+        amount / 2 => amount;
+        return chooser.getFloat( -amount, amount );
+        return Std.randf( );
     }
 
     fun float squareOsc( float amount ) {
+        // halve to get range above and below the basefreq (note sine LFO
+        // does this automatically as part of being a sine function)
+        amount / 2 => amount;
         // i think this should work...
         if ( currSquareAmp == amount ) {
             -amount => currSquareAmp;

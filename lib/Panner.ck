@@ -1,5 +1,4 @@
 public class Panner extends LFO {
-    Chooser chooser;
     10 => int actionDenominator;
     5.0 => float waitMin;
     15 => float waitMax;

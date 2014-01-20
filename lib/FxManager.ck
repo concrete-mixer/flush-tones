@@ -7,17 +7,17 @@ public class FxManager {
     Pan2 outputPan;
     0.8 => outputPan.gain;
 
-    <<< "panner initialise for fx chain" >>>;
-    spork ~ panner.initialise(outputPan);
+    // spork ~ panner.initialise(outputPan);
     Fx @ fxChain[ maxConcurrentFx ];
-    Fx @ fxBattery[3];
+    Fx @ fxBattery[4];
 
     fun void initialise( UGen outputL, UGen outputR ) {
         outputPan.left => outputL;
         outputPan.right => outputR;
         new FxDelay @=> fxBattery[0];
-        new FxChorus @=> fxBattery[1];
-        new FxReverb @=> fxBattery[2];
+        new FxFilter @=> fxBattery[1];
+        new FxChorus @=> fxBattery[2];
+        new FxReverb @=> fxBattery[3];
 
         fxChainBuild();
     }

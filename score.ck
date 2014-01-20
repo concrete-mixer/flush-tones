@@ -1,24 +1,28 @@
 me.dir() => string path;
 Chooser chooser;
+Dyno dynoL => dac.left;
+Dyno dynoR => dac.right;
+
+dynoL.limit();
+dynoR.limit();
 
 FxManager fxManager;
-fxManager.initialise();
+fxManager.initialise( dynoL, dynoR );
 
-fun void initSample(string filepath, int loop, float gain ) {
+fun void initSample(string filepath, int loop, float gain, UGen leftOut, UGen rightOut ) {
     Sample sample;
     ActionFadeIn fadeIn;
     if ( chooser.getInt( 1, 1 ) ) {
-        <<< "hurf" >>>;
         fxManager.connect( sample.out );
     }
 
-    spork ~ sample.initialise( filepath, loop, gain );
+    spork ~ sample.initialise( filepath, loop, gain, leftOut, rightOut );
     fadeIn.execute( sample );
 }
 
-initSample(path + "audio/santorini_cistern.wav", 1, 0.7 );
-initSample(path + "audio/drip-no-hum-full.wav", 1, 0.7 );
-initSample(path + "audio/flush-short.wav", 0, 0.2 );
+initSample(path + "audio/santorini_cistern.wav", 1, 0.5, dynoL, dynoR );
+initSample(path + "audio/drip-no-hum-full2.wav", 1, 0.5, dynoL, dynoR );
+// initSample(path + "audio/drip-hum-sub2.wav", 1, 0.5, dynoL, dynoR );
 
 [
     path + "audio/tuba/2748_tuba_023_5_7_1.mp3.wav",
@@ -26,7 +30,8 @@ initSample(path + "audio/flush-short.wav", 0, 0.2 );
     path + "audio/bassoon/2166_bassoon_036_4_7_1.mp3.wav",
     path + "audio/bassoon/2385_bassoon_077_2_7_1.mp3.wav",
     path + "audio/saxophone/1390_saxophone_057_2_9_1.mp3.wav",
-    path + "audio/saxophone/1811_saxophone_067_3_6_1.mp3.wav"
+    path + "audio/saxophone/1811_saxophone_067_3_6_1.mp3.wav",
+    path + "audio/flush2-short.wav"
 ] @=> string filesList[];
 
 WaveBank bank;
@@ -35,7 +40,6 @@ bank.initialise(filesList);
 class WaveBank {
     6 => int selCount;
     Chooser chooser;
-    Pan2 pan => dac;
     string selectedWaves[selCount];
 
     fun void initialise( string files[] ) {
@@ -44,18 +48,14 @@ class WaveBank {
 
         while ( selectionsMade < selCount ) {
             chooser.getInt( 0, selCount - 1 ) => int choice;
-            <<< "choice", choice >>>;
-            <<< "files", files[choice] >>>;
             0 => int alreadyChosen;
 
             for ( 0 => int j; j < choices.cap() -1; j++ ) {
-                <<< "choices[", j, "]", choices[j] >>>;
                 if ( choices[j] == choice ) {
                     1 => alreadyChosen;
                 }
             }
 
-            <<< "already chosen", alreadyChosen >>>;
             if ( ! alreadyChosen ) {
                 files[choice] => selectedWaves[selectionsMade];
                 choice => choices[selectionsMade];
@@ -79,36 +79,52 @@ class WaveBank {
     // plan here is generate a random sequence of samples
     fun void schedule() {
         while ( true ) {
-            dur waitTime;
             if ( chooser.takeAction( 2 ) ) {
-                playSnd() => waitTime;
+                playSnd();
             }
             else {
+                dur waitTime;
                 chooser.getWait( 3, 5 ) => waitTime;
+                <<< "passing time", waitTime / 44100 >>>;
+                waitTime => now;
             }
-            <<< "passing time", waitTime / 44100 >>>;
-            waitTime => now;
         }
     }
 
     fun dur playSnd() {
+        <<< "playing sound" >>>;
         chooser.getInt( 0, selCount - 1 ) => int choice;
-        SndBuf buf => pan;
+        SndBuf buf => Pan2 pan;
+        pan.left => dynoL;
+        pan.right => dynoR;
         0.5 => buf.gain;
         selectedWaves[choice] => buf.read;
         // <<< "choice", selectedWaves[choice] >>>;
         // reverse now and then
         if ( chooser.takeAction( 3 ) ) {
+            <<< "reversing" >>>;
             -1.0 => buf.rate;
         }
 
-        if ( chooser.takeAction( 2 ) ) {
+        chooser.takeAction( 2 ) => int fxOn;
+
+        if ( fxOn ) {
             <<< "fx!" >>>;
             buf => fxManager.connect;
         }
 
         chooser.getFloat( -1.0, 1.0 ) => pan.pan;
-        return buf.length();
+        <<< "pan:", pan.pan() >>>;
+        buf.length() => now;
+
+        buf =< pan;
+        pan =< dynoL;
+        pan =< dynoR;
+        <<< "no longer playing sound" >>>;
+
+        if ( fxOn ) {
+            buf => fxManager.disconnect;
+        }
     }
 }
 

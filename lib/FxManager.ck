@@ -3,17 +3,17 @@ public class FxManager {
     Panner panner;
     3 => int maxConcurrentFx;
     Gain inputGain;
-    0.5 => inputGain.gain;
+    0.8 => inputGain.gain;
     Pan2 outputPan;
-    0.5 => outputPan.gain;
+    0.8 => outputPan.gain;
 
     // spork ~ panner.initialise(outputPan);
-    outputPan => dac;
-
     Fx @ fxChain[ maxConcurrentFx ];
     Fx @ fxBattery[3];
 
-    fun void initialise() {
+    fun void initialise( UGen outputL, UGen outputR ) {
+        outputPan.left => outputL;
+        outputPan.right => outputR;
         new FxDelay @=> fxBattery[0];
         new FxChorus @=> fxBattery[1];
         new FxReverb @=> fxBattery[2];
@@ -22,8 +22,11 @@ public class FxManager {
     }
 
     fun void connect( UGen gen ) {
-        <<< "begorrah" >>>;
         gen => inputGain;
+    }
+
+    fun void disconnect( UGen gen ) {
+        gen =< inputGain;
     }
 
     fun void fxChainBuild() {

@@ -11,5 +11,5 @@ Machine.add(lib_path + "/Fx/FxChorus.ck");
 Machine.add(lib_path + "/Fx/FxReverb.ck");
 Machine.add(lib_path + "/Fx/FxFilter.ck");
 Machine.add(lib_path + "/FxManager.ck");
-Machine.add(lib_path + "/Action/ActionSampleReverse.ck");
+Machine.add(lib_path + "/WaveBank.ck");
 Machine.add("score.ck");

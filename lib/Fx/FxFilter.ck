@@ -57,7 +57,6 @@ public class FxFilter extends Fx {
             while ( true ) {
                 lfo.osc( lfoFreq, amount, oscType ) => float freqDelta;
                 baseFilterFreq + freqDelta => filter.freq;
-                <<< oscType, filter.freq() >>>;
                 100::ms => now;
             }
         }

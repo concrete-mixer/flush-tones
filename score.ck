@@ -18,9 +18,21 @@ fun void initSample(string filepath, int loop, float gain, UGen leftOut, UGen ri
     spork ~ sample.initialise( filepath, loop, gain, leftOut, rightOut );
 }
 
-initSample(path + "audio/santorini_cistern.wav", 1, 0.5, dynoL, dynoR );
-initSample(path + "audio/drip-no-hum-full2.wav", 1, 0.5, dynoL, dynoR );
+// initSample(path + "audio/santorini_cistern2.wav", 1, 0.5, dynoL, dynoR );
+// initSample(path + "audio/drip-no-hum-full2.wav", 1, 0.5, dynoL, dynoR );
 // initSample(path + "audio/drip-hum-sub2.wav", 1, 0.5, dynoL, dynoR );
+initSample(path + "audio/refill-loop.wav", 1, 0.5, dynoL, dynoR );
+initSample(path + "audio/refill-tickley-burble.wav", 1, 0.5, dynoL, dynoR );
+// initSample(path + "audio/switch-lights-loop.wav", 1, 0.5, dynoL, dynoR );
+
+[
+    path + "audio/santorini_cistern2.wav",
+    path + "audio/drip-no-hum-full2.wav",
+    path + "audio/drip-hum-sub2.wav",
+    path + "audio/refill-loop.wav",
+    path + "audio/refill-tickley-burble.wav",
+    path + "audio/switch-lights-loop.wav"
+] @=> string loopFilesList[];
 
 [
     path + "audio/tuba/2748_tuba_023_5_7_1.mp3.wav",
@@ -28,105 +40,23 @@ initSample(path + "audio/drip-no-hum-full2.wav", 1, 0.5, dynoL, dynoR );
     path + "audio/bassoon/2166_bassoon_036_4_7_1.mp3.wav",
     path + "audio/bassoon/2385_bassoon_077_2_7_1.mp3.wav",
     path + "audio/saxophone/1390_saxophone_057_2_9_1.mp3.wav",
-    path + "audio/saxophone/1811_saxophone_067_3_6_1.mp3.wav",
-    path + "audio/flush2-short.wav"
-] @=> string filesList[];
+    path + "audio/saxophone/1811_saxophone_067_3_6_1.mp3.wav"
+] @=> string tunedFilesList[];
 
-WaveBank bank;
-bank.initialise(filesList);
+[
+    path + "audio/flush-short2.wav",
+    path + "audio/switch-lights-loop.wav",
+    path + "audio/foot-on-grill3.wav",
+    path + "audio/flush-lever-flick.wav"
+] @=> string concreteFilesList[];
 
-class WaveBank {
-    6 => int selCount;
-    Chooser chooser;
-    string selectedWaves[selCount];
+chooser.selectFiles( tunedFilesList, 4 ) @=> string tunedFiles[];
+chooser.selectFiles( concreteFilesList, 4 ) @=> string concreteFiles[];
 
-    fun void initialise( string files[] ) {
-        int choices[selCount];
-        0 => int selectionsMade;
-
-        while ( selectionsMade < selCount ) {
-            chooser.getInt( 0, selCount - 1 ) => int choice;
-            0 => int alreadyChosen;
-
-            for ( 0 => int j; j < choices.cap() -1; j++ ) {
-                if ( choices[j] == choice ) {
-                    1 => alreadyChosen;
-                }
-            }
-
-            if ( ! alreadyChosen ) {
-                files[choice] => selectedWaves[selectionsMade];
-                choice => choices[selectionsMade];
-                selectionsMade++;
-            }
-        }
-
-        printSounds();
-        schedule();
-    }
-
-    fun void printSounds() {
-        0 => int i;
-
-        while( i < selectedWaves.cap() ) {
-            <<< "file:", selectedWaves[i] >>>;
-            i++;
-        }
-    }
-
-    // plan here is generate a random sequence of samples
-    fun void schedule() {
-        while ( true ) {
-            if ( chooser.takeAction( 2 ) ) {
-                playSnd();
-            }
-            else {
-                dur waitTime;
-                chooser.getWait( 3, 5 ) => waitTime;
-                <<< "passing time", waitTime / 44100 >>>;
-                waitTime => now;
-            }
-        }
-    }
-
-    fun dur playSnd() {
-        <<< "playing sound" >>>;
-        chooser.getInt( 0, selCount - 1 ) => int choice;
-        SndBuf buf => Pan2 pan;
-        pan.left => dynoL;
-        pan.right => dynoR;
-        0.5 => buf.gain;
-        selectedWaves[choice] => buf.read;
-        // <<< "choice", selectedWaves[choice] >>>;
-        // reverse now and then
-        if ( chooser.takeAction( 3 ) ) {
-            <<< "reversing" >>>;
-            -1.0 => buf.rate;
-        }
-
-        chooser.takeAction( 2 ) => int fxOn;
-
-        if ( fxOn ) {
-            <<< "fx!" >>>;
-            buf => fxManager.connect;
-        }
-
-        chooser.getFloat( -1.0, 1.0 ) => pan.pan;
-        <<< "pan:", pan.pan() >>>;
-        buf.length() => now;
-
-        buf =< pan;
-        pan.left =< dynoL;
-        pan.right =< dynoR;
-        <<< "no longer playing sound" >>>;
-
-        if ( fxOn ) {
-            buf => fxManager.disconnect;
-        }
-    }
-}
-
-
+WaveBank tunedBank;
+WaveBank concreteBank;
+spork ~ tunedBank.initialise( tunedFiles, fxManager, dynoL, dynoR, 3, 10 );
+spork ~ concreteBank.initialise( concreteFiles, fxManager, dynoL, dynoR, 2, 10 );
 
 // keep things ticking over
 while ( true ) {

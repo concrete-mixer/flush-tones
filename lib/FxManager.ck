@@ -1,7 +1,7 @@
 public class FxManager {
     Chooser chooser;
     Panner panner;
-    2 => int maxConcurrentFx;
+    4 => int maxConcurrentFx;
     Gain inputGain;
     0.8 => inputGain.gain;
     Pan2 outputPan;

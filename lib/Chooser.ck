@@ -43,5 +43,33 @@ public class Chooser {
     fun static int getInt( int min, int max ) {
         return Math.random2( min, max );
     }
-}
 
+    fun string[] selectFiles( string inputFiles[], int targetCount ) {
+        string outputFiles[ targetCount ];
+        int choices[ targetCount ];
+        0 => int selectionsCount;
+        <<< targetCount, choices.cap() - 1 >>>;
+        while ( selectionsCount < targetCount ) {
+            getInt( 0, inputFiles.cap() - 1 ) => int choice;
+            0 => int alreadyChosen;
+            <<< "choice", choice, choices.cap() >>>;
+
+            for ( 0 => int j; j < choices.cap() - 1; j++ ) {
+//                <<< "j", j, choices[j] >>>;
+                if ( choices[j] == choice ) {
+                    // <<< choice, "already chosen" >>>;
+                    1 => alreadyChosen;
+                }
+            }
+
+            if ( ! alreadyChosen ) {
+                <<< "harro" >>>;
+                inputFiles[choice] => outputFiles[ selectionsCount ];
+                choice => choices[ selectionsCount ];
+                selectionsCount++;
+            }
+
+        }
+        return outputFiles;
+    }
+}

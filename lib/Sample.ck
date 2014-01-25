@@ -1,32 +1,41 @@
 public class Sample {
-    Panner panner;
     Fader fader;
     "out" => string fadeState;
     1 => int active;
     Chooser chooser;
 
     // use PainGain's gain by default
-    SndBuf sample;
+    SndBuf buf;
     Pan2 pan;
-    Gain out;
     0.5 => float maxGain;
 
     fun void initialise(string filepath, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
-        sample.loop( loop );
-        sample.read( filepath );
+        buf.read( filepath );
+        buf.loop( loop );
 
+        filepath => buf.read;
         endGain => maxGain;
-        0 => sample.gain;
-        sample => out => pan;
+        buf => pan;
         pan.left => outputLeft; // left
         pan.right => outputRight; // right
-        <<< sample.gain >>>;
-        spork ~ panner.initialise( pan );
 
-        fadeIn( endGain );
+        if ( loop ) {
+            Panner panner;
+            spork ~ panner.initialise( pan );
+            // 0 => buf.gain;
+            // fadeIn( endGain );
 
-        while ( true ) {
-            1::second => now;
+            spork ~ reverseSchedule();
+        }
+        else {
+            chooser.getFloat( -1.0, 1.0 ) => pan.pan;
+            endGain => buf.gain;
+            <<< "Gain", buf.gain() >>>;
+            buf.length() => now;
+            buf =< pan;
+            pan.left =< outputLeft;
+            pan.right =< outputRight;
+            0 => active;
         }
     }
 
@@ -48,9 +57,9 @@ public class Sample {
         }
 
         while( fadeTime > 0::second ) {
-            sample.gain() => float currGain;
+            buf.gain() => float currGain;
             currGain + gainIncrement => float newGain;
-            newGain => sample.gain;
+            newGain => buf.gain;
 
             timeIncrement -=> fadeTime;
             timeIncrement => now;
@@ -66,7 +75,19 @@ public class Sample {
             0.8 => vol;
         }
 
-        vol => sample.gain;
+        vol => buf.gain;
+    }
+
+    fun void reverseSchedule() {
+        while ( true ) {
+            chooser.getDur( 3, 8 ) => dur duration;
+            if ( chooser.takeAction( 3 ) ) {
+                reverse( duration );
+            }
+            else {
+                duration => now;
+            }
+        }
     }
 
     fun void reverse( dur duration) {
@@ -76,11 +97,10 @@ public class Sample {
     }
 
     fun void setRate( float rate ) {
-        sample.rate( rate );
+        buf.rate( rate );
     }
 
     fun void tearDown() {
-        panner.tearDown();
     }
 }
 

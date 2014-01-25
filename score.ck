@@ -2,7 +2,9 @@ me.dir() => string path;
 Chooser chooser;
 Dyno dynoL => dac.left;
 Dyno dynoR => dac.right;
-Fader fader;
+
+0 => dynoL.gain;
+0 => dynoR.gain;
 
 dynoL.limit();
 dynoR.limit();
@@ -41,8 +43,18 @@ chooser.selectFiles( oneShotFilesList, 4 ) @=> string oneShotFiles[];
 
 initLoops( loopFiles, 0.5 );
 spork ~ schedule( oneShotFiles, 1,3 );
+Fader fader;
+5::second => dur fadeTime;
+
+// dyno gain out still zero - to avoid pi *hearing* the pi flaking out while the samples are loaded, tick over a couple of seconds then fade the dynos in
+2::second => now;
+
+spork ~ fader.fadeIn( fadeTime, 0.8, dynoL );
+spork ~ fader.fadeIn( fadeTime, 0.8, dynoR );
+
 
 fun void initLoops(string files[], float gain ) {
+    printFiles( files );
     for ( 0 => int i; i < files.cap(); i++ ) {
         Sample sample;
         sample.initialise( files[i], 1, gain, dynoL, dynoR );
@@ -69,7 +81,6 @@ fun void schedule( string files[], int waitMin, int waitMax ) {
 }
 
 fun dur playSnd( string files[] ) {
-    printFiles( files );
     chooser.getInt( 0, files.cap() - 1 ) => int choice;
     Sample sample;
 
@@ -97,7 +108,9 @@ fun void printFiles( string files[] ) {
     }
 }
 
-while ( true ) {
-    <<< "ping..." >>>;
-    5::second => now;
-}
+30::second => now;
+
+spork ~ fader.fadeOut( fadeTime, dynoL );
+spork ~ fader.fadeOut( fadeTime, dynoR );
+
+10::second => now;

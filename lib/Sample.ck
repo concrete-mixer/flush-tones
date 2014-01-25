@@ -12,7 +12,6 @@ public class Sample {
     fun void initialise(string filepath, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
         buf.read( filepath );
         buf.loop( loop );
-
         filepath => buf.read;
         endGain => maxGain;
         buf => pan;
@@ -37,45 +36,6 @@ public class Sample {
             pan.right =< outputRight;
             0 => active;
         }
-    }
-
-    fun dur fadeIn( float gain ) {
-        chooser.getDur( 2, 7 ) => dur fadeTime;
-        "in" => string fadeState;
-        changeFade( fadeState, fadeTime );
-        return fadeTime;
-    }
-
-    fun void changeFade( string targetState, dur fadeTime ) {
-        <<< "targetState", targetState >>>;
-        Fader.getTimeIncrement( fadeTime ) => dur timeIncrement;
-        Fader.getGainIncrement() => float gainIncrement;
-        "in" => string newState;
-
-        if ( targetState == "out" ) {
-            -gainIncrement => gainIncrement;
-        }
-
-        while( fadeTime > 0::second ) {
-            buf.gain() => float currGain;
-            currGain + gainIncrement => float newGain;
-            newGain => buf.gain;
-
-            timeIncrement -=> fadeTime;
-            timeIncrement => now;
-        }
-
-        targetState => fadeState;
-    }
-
-    fun void setVol( float vol ) {
-        // safety!
-        if ( vol > 0.8 ) {
-            <<< "WARNING VOL OVER MAX THRESHOLD, LIMITING" >>>;
-            0.8 => vol;
-        }
-
-        vol => buf.gain;
     }
 
     fun void reverseSchedule() {

@@ -1,6 +1,8 @@
 public class FxManager {
     Chooser chooser;
     Panner panner;
+    Fader fader;
+
     4 => int maxConcurrentFx;
     Gain inputGain;
     0.8 => inputGain.gain;
@@ -11,9 +13,14 @@ public class FxManager {
     Fx @ fxChain[ maxConcurrentFx ];
     Fx @ fxBattery[4];
 
+    UGen outLeft, outRight;
+
     fun void initialise( UGen outputL, UGen outputR ) {
-        outputPan.left => outputL;
-        outputPan.right => outputR;
+        outputL @=> outLeft;
+        outputR @=> outRight;
+
+        outputPan.left => outLeft;
+        outputPan.right => outRight;
         new FxDelay @=> fxBattery[0];
         new FxFilter @=> fxBattery[1];
         new FxChorus @=> fxBattery[2];
@@ -75,5 +82,31 @@ public class FxManager {
                 fx.output => outputPan;
             }
         }
+    }
+
+    fun void tearDown() {
+        for ( 0 => int i; i < fxChain.cap(); i++ ) {
+            fxChain[ i ] @=> Fx fx;
+            if ( i == 0 ) {
+                inputGain =< fx.input;
+            }
+            else {
+                fxChain[ i - 1 ] @=> Fx upstreamFx;
+                upstreamFx.output =< fx.input;
+            }
+
+            if ( i == fxChain.cap() - 1 ) {
+                fx.output =< outputPan;
+            }
+
+        }
+
+        Fx fxChainNew[ maxConcurrentFx ];
+        fxChainNew @=> fxChain;
+        Fx fxBatteryNew[ 4 ];
+        fxBatteryNew @=> fxBattery;
+        <<< "disengaging outputPan from dynos">>>;
+        outputPan.left =< outLeft;
+        outputPan.right =< outRight;
     }
 }

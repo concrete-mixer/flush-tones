@@ -8,6 +8,7 @@ public class Sample {
     SndBuf buf;
     Pan2 pan;
     0.5 => float maxGain;
+    UGen outLeft, outRight;
 
     fun void initialise(string filepath, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
         buf.read( filepath );
@@ -15,21 +16,19 @@ public class Sample {
         filepath => buf.read;
         endGain => maxGain;
         buf => pan;
+        outputLeft @=> outLeft;
+        outputRight @=> outRight;
         pan.left => outputLeft; // left
         pan.right => outputRight; // right
 
         if ( loop ) {
             Panner panner;
             spork ~ panner.initialise( pan );
-            // 0 => buf.gain;
-            // fadeIn( endGain );
-
-            spork ~ reverseSchedule();
+            reverseSchedule();
         }
         else {
             chooser.getFloat( -1.0, 1.0 ) => pan.pan;
             endGain => buf.gain;
-            <<< "Gain", buf.gain() >>>;
             buf.length() => now;
             buf =< pan;
             pan.left =< outputLeft;
@@ -39,8 +38,9 @@ public class Sample {
     }
 
     fun void reverseSchedule() {
-        while ( true ) {
+        while ( active ) {
             chooser.getDur( 3, 8 ) => dur duration;
+
             if ( chooser.takeAction( 3 ) ) {
                 reverse( duration );
             }
@@ -61,6 +61,11 @@ public class Sample {
     }
 
     fun void tearDown() {
+        0 => active;
+        fader.fadeOut( 2::second, buf );
+        buf =< pan;
+        pan.left =< outLeft;
+        pan.right =< outRight;
     }
 }
 

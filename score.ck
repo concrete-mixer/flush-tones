@@ -8,8 +8,7 @@ Dyno dynoR => dac.right;
 
 dynoL.limit();
 dynoR.limit();
-// 0 => dynoL.gain;
-// 0 => dynoR.gain;
+1 => int active;
 
 FxManager fxManager;
 fxManager.initialise( dynoL, dynoR );
@@ -41,8 +40,8 @@ fxManager.initialise( dynoL, dynoR );
 chooser.selectFiles( loopFilesList, 2 ) @=> string loopFiles[];
 chooser.selectFiles( oneShotFilesList, 4 ) @=> string oneShotFiles[];
 
-initLoops( loopFiles, 0.5 );
-spork ~ schedule( oneShotFiles, 1,3 );
+spork ~ initLoops( loopFiles, 0.5 );
+spork ~ schedule( oneShotFiles, 1, 3 );
 Fader fader;
 5::second => dur fadeTime;
 
@@ -52,22 +51,50 @@ Fader fader;
 spork ~ fader.fadeIn( fadeTime, 0.8, dynoL );
 spork ~ fader.fadeIn( fadeTime, 0.8, dynoR );
 
+20::second => now;
 
+spork ~ fader.fadeOut( fadeTime, dynoL );
+spork ~ fader.fadeOut( fadeTime, dynoR );
+
+fadeTime => now;
+
+0 => active;
+spork ~ fxManager.tearDown();
+fadeTime => now;
+
+// FUNCTIONS FOLLOW
 fun void initLoops(string files[], float gain ) {
     printFiles( files );
+
+    Sample @ samples[ files.cap() ];
+
     for ( 0 => int i; i < files.cap(); i++ ) {
         Sample sample;
-        sample.initialise( files[i], 1, gain, dynoL, dynoR );
+        <<< "sporking", files[i] >>>;
+        spork ~ sample.initialise( files[i], 1, gain, dynoL, dynoR );
 
         if ( chooser.getInt( 1, 1 ) ) {
             fxManager.connect( sample.buf );
         }
+
+        sample @=> samples[ i ];
     }
+
+    while ( active ) {
+        5::second => now;
+    }
+
+    for ( 0 => int i; i < samples.cap(); i++ ) {
+        samples[ i ] @=> Sample sample;
+        spork ~ sample.tearDown();
+    }
+
+    return;
 }
 
 // plan here is generate a random sequence of samples
 fun void schedule( string files[], int waitMin, int waitMax ) {
-    while ( true ) {
+    while ( active ) {
         if ( chooser.takeAction( 3 ) ) {
             playSnd( files );
         }
@@ -80,19 +107,23 @@ fun void schedule( string files[], int waitMin, int waitMax ) {
     }
 }
 
-fun dur playSnd( string files[] ) {
+fun void playSnd( string files[] ) {
     chooser.getInt( 0, files.cap() - 1 ) => int choice;
     Sample sample;
 
     chooser.takeAction( 3 ) => int fxOn;
+    spork ~ sample.initialise( files[choice], 0, 0.25, dynoL, dynoR );
 
+    // this is a bit ugly, but we have to spork the line above and wait...
+    until ( sample.buf.length() ) {
+        1::ms => now;
+    }
     if ( fxOn ) {
-        <<< "FX!!!" >>>;
         sample.buf => fxManager.connect;
     }
 
-    sample.initialise( files[choice], 0, 0.25, dynoL, dynoR );
     sample.buf.length() => now;
+    sample.tearDown();
 
     if ( fxOn ) {
         sample.buf => fxManager.disconnect;
@@ -107,10 +138,3 @@ fun void printFiles( string files[] ) {
         i++;
     }
 }
-
-30::second => now;
-
-spork ~ fader.fadeOut( fadeTime, dynoL );
-spork ~ fader.fadeOut( fadeTime, dynoR );
-
-10::second => now;

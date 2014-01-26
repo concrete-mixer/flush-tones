@@ -4,7 +4,6 @@ Machine.add(lib_path + "/LFO.ck");
 Machine.add(lib_path + "/Fader.ck");
 Machine.add(lib_path + "/Panner.ck");
 Machine.add(lib_path + "/Sample.ck");
-Machine.add(lib_path + "/Action.ck");
 Machine.add(lib_path + "/Fx.ck");
 Machine.add(lib_path + "/Fx/FxDelay.ck");
 Machine.add(lib_path + "/Fx/FxChorus.ck");

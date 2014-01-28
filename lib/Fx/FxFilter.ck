@@ -2,6 +2,8 @@ public class FxFilter extends Fx {
     FilterBasic filter;
     LFO lfo;
 
+    fun string idString() { return "FxFilter"; }
+
     fun void initialise() {
         chooser.getInt( 0, 2 ) => int typeChoice;
 

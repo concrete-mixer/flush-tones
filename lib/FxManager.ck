@@ -3,7 +3,7 @@ public class FxManager {
     Panner panner;
     Fader fader;
 
-    4 => int maxConcurrentFx;
+    3 => int maxConcurrentFx;
     Gain inputGain;
     0.8 => inputGain.gain;
     Pan2 outputPan;
@@ -20,7 +20,9 @@ public class FxManager {
         outputR @=> outRight;
 
         outputPan.left => outLeft;
-        outputPan.right => outRight;
+        Echo echo;
+        chooser.getDur( 0, 0.1 ) => echo.delay;
+        outputPan.right => echo => outRight;
         new FxDelay @=> fxBattery[0];
         new FxFilter @=> fxBattery[1];
         new FxChorus @=> fxBattery[2];
@@ -65,11 +67,12 @@ public class FxManager {
     }
 
     fun void fxChainFx() {
+        <<< "FXCHAIN:" >>>;
         for ( 0 => int i; i < fxChain.cap(); i++ ) {
             fxChain[ i ] @=> Fx fx;
 
             spork ~ fx.initialise();
-
+            <<< i, fx.idString() >>>;
             if ( i == 0 ) {
                 inputGain => fx.input;
             }
@@ -81,7 +84,12 @@ public class FxManager {
             if ( i == fxChain.cap() - 1 ) {
                 fx.output => outputPan;
             }
+            else {
+                <<< "=>" >>>;
+            }
         }
+
+        <<< "END OF FXCHAIN DEBUG" >>>;
     }
 
     fun void tearDown() {

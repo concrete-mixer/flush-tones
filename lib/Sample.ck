@@ -16,6 +16,7 @@ public class Sample {
         filepath => buf.read;
         endGain => maxGain;
         buf => pan;
+
         outputLeft @=> outLeft;
         outputRight @=> outRight;
         pan.left => outputLeft; // left
@@ -66,6 +67,31 @@ public class Sample {
         buf =< pan;
         pan.left =< outLeft;
         pan.right =< outRight;
+    }
+
+    // API call to give Sample option of killing or lowering
+    // its dry output
+    // useful for providing variation when using fx chains
+    fun void setMixChoice() {
+        chooser.getInt( 0, 3 ) => int mixChoice;
+
+        // if mixChoice is 0, kill dry output
+        // if 1, halve volume
+        // if 2-3 keep dry volume normal
+        if ( !mixChoice ) {
+            // set sample dry out to 0
+            <<< "killing dry!" >>>;
+            0 => setMix;
+        }
+        else if ( mixChoice == 1 ) {
+            <<< "halving dry!" >>>;
+            // halve dry gain
+            buf.gain() / 2 => setMix;
+        }
+    }
+
+    fun void setMix( float gain ) {
+        0 => pan.gain;
     }
 }
 

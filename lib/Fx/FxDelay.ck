@@ -10,11 +10,10 @@ public class FxDelay extends Fx {
         <<< "FxDelay.initialise() doing stuff" >>>;
         1 => active;
         chooser.getDur( 0.5, 20 ) => dur echoDuration;
-        chooser.getDur( 0.02, 0.5 ) => dur leftLength;
-        chooser.getDur( 0.02, 0.5 ) => dur rightLength;
+        chooser.getDur( 0.02, 0.5 ) => dur length;
         chooser.getFloat( 0.2, 0.8 ) => float echoMix;
 
-        echo.delay( leftLength );
+        echo.delay( length );
         echo.mix( echoMix );
 
         while ( active ) {

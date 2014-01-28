@@ -36,7 +36,7 @@ public class FxFilter extends Fx {
         baseFilterFreq => filter.freq;
 
         // set Q between 1 and 5
-        chooser.getFloat( 3, 10 ) => float Q;
+        chooser.getFloat( 5, 13 ) => float Q;
         Q => filter.Q;
 
         // determine whether to oscillate (mostly yes)
@@ -45,15 +45,18 @@ public class FxFilter extends Fx {
             // as a rule amount should be less than basefreq over 2
             chooser.getFloat( baseFilterFreq / 2, baseFilterFreq / 2 + baseFilterFreq / 4 ) => amount;
             // determine oscillation function
-            lfo.getOscType() => string oscType;
+            // square doesn't work very well, so we're defining our own
+            [ "sine", "sampleHold" ] @=> string oscTypes[];
+            chooser.getInt(0,1) => int choice;
+            oscTypes[ choice ] => string oscType;
             <<< "we're oscillating with", oscType >>>;
             chooser.getFloat( 0.05, 0.5 ) => float lfoFreq;
 
             // sample hold is better when its faster...
             if ( oscType != "sine" ) {
-                lfoFreq * 10 => lfoFreq;
+                lfoFreq * 20 => lfoFreq;
             }
-            "sampleHold" => oscType;
+
             while ( true ) {
                 lfo.osc( lfoFreq, amount, oscType ) => float freqDelta;
                 baseFilterFreq + freqDelta => filter.freq;

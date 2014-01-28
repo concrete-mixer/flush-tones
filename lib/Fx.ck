@@ -6,7 +6,7 @@ public class Fx {
 
     fun string idString() { return "Fx"; }
 
-    fun void initialise() { <<< "If you're seeing this something's wrong" >>>; }
+    fun void initialise() {}
 
     fun void connectToFxChain( Gain targetGain ) {}
 

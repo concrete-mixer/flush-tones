@@ -11,7 +11,6 @@ dynoR.limit();
 1 => int active;
 
 FxManager fxManager;
-fxManager.initialise( dynoL, dynoR );
 
 [
     path + "audio/santorini_cistern2.wav",
@@ -19,48 +18,102 @@ fxManager.initialise( dynoL, dynoR );
     path + "audio/drip-hum-sub2.wav",
     path + "audio/refill-loop.wav",
     path + "audio/refill-tickley-burble.wav",
-    path + "audio/switch-lights-loop.wav"
+    path + "audio/switch-lights-loop.wav",
+    path + "audio/abashiri-aircon.wav"
 ] @=> string loopFilesList[];
 
 [
     // here follow the tuned samples
-    path + "audio/tuba/2748_tuba_023_5_7_1.mp3.wav",
-    path + "audio/tuba/2513_tuba_043_4_5_1.mp3.wav",
+    // bassoon:
+    path + "audio/bassoon/1987_bassoon_042_3_6_1.mp3.wav",
+    path + "audio/bassoon/1989_bassoon_043_1_6_1.mp3.wav",
+    path + "audio/bassoon/2028_bassoon_053_4_6_1.mp3.wav",
+    path + "audio/bassoon/2073_bassoon_065_2_6_1.mp3.wav",
+    path + "audio/bassoon/2078_bassoon_066_4_6_1.mp3.wav",
+    path + "audio/bassoon/2082_bassoon_067_4_6_1.mp3.wav",
+    path + "audio/bassoon/2086_bassoon_068_4_6_1.mp3.wav",
     path + "audio/bassoon/2166_bassoon_036_4_7_1.mp3.wav",
+    path + "audio/bassoon/2187_bassoon_043_2_7_1.mp3.wav",
+    path + "audio/bassoon/2212_bassoon_051_4_7_1.mp3.wav",
+    path + "audio/bassoon/2253_bassoon_055_3_7_1.mp3.wav",
+    path + "audio/bassoon/2318_bassoon_073_3_7_1.mp3.wav",
     path + "audio/bassoon/2385_bassoon_077_2_7_1.mp3.wav",
-    path + "audio/saxophone/1390_saxophone_057_2_9_1.mp3.wav",
+    path + "audio/bassoon/2399_bassoon_034_2_9_1.mp3.wav",
+    path + "audio/bassoon/2559_bassoon_034_4_10_1.mp3.wav",
+    path + "audio/bassoon/2588_bassoon_042_1_10_1.mp3.wav",
+    path + "audio/bassoon/2679_bassoon_068_2_10_1.mp3.wav",
+    path + "audio/bassoon/2787_bassoon_055_6_3_1.mp3.wav",
+
+    // tuba:
+    path + "audio/tuba/3228_tuba_047_3_10_23.mp3.wav",
+    path + "audio/tuba/2632_tuba_031_4_6_1.mp3.wav",
+    path + "audio/tuba/3127_tuba_045_5_8_11.mp3.wav",
+    path + "audio/tuba/3171_tuba_039_3_9_16.mp3.wav",
+    path + "audio/tuba/2879_tuba_022_5_8_1.mp3.wav",
+    path + "audio/tuba/3103_tuba_053_2_10_1.mp3.wav",
+    path + "audio/tuba/3062_tuba_031_2_10_1.mp3.wav",
+    path + "audio/tuba/2466_tuba_032_1_5_1.mp3.wav",
+    path + "audio/tuba/2986_tuba_025_5_9_1.mp3.wav",
+    path + "audio/tuba/2513_tuba_043_4_5_1.mp3.wav",
+    path + "audio/tuba/2748_tuba_023_5_7_1.mp3.wav",
+    path + "audio/tuba/3131_tuba_057_5_8_11.mp3.wav",
+
+    // saxophone:
+    path + "audio/saxophone/1054_saxophone_063_2_5_1.mp3.wav",
+    path + "audio/saxophone/1516_saxophone_059_4_10_1.mp3.wav",
+    path + "audio/saxophone/1029_saxophone_057_1_5_1.mp3.wav",
+    path + "audio/saxophone/1494_saxophone_053_4_10_1.mp3.wav",
+    path + "audio/saxophone/1502_saxophone_055_4_10_1.mp3.wav",
     path + "audio/saxophone/1811_saxophone_067_3_6_1.mp3.wav",
+    path + "audio/saxophone/1069_saxophone_068_3_5_1.mp3.wav",
+    path + "audio/saxophone/1037_saxophone_058_1_5_1.mp3.wav",
+    path + "audio/saxophone/1390_saxophone_057_2_9_1.mp3.wav",
+    path + "audio/saxophone/1026_saxophone_055_4_5_1.mp3.wav",
+    path + "audio/saxophone/1318_saxophone_059_1_5_1.mp3.wav",
 
     // here follow the concrete samples
-    path + "audio/flush-short2.wav",
-    path + "audio/foot-on-grill3.wav",
-    path + "audio/flush-lever-flick.wav"
+    path + "audio/concrete-oneshot/flush-short2.wav",
+    path + "audio/concrete-oneshot/foot-on-grill3.wav",
+    path + "audio/concrete-oneshot/flush-lever-flick.wav",
+    path + "audio/concrete-oneshot/bubble-1.wav",
+    path + "audio/concrete-oneshot/bubble-2.wav",
+    path + "audio/concrete-oneshot/bubble-3.wav"
 ] @=> string oneShotFilesList[];
 
-chooser.selectFiles( loopFilesList, 2 ) @=> string loopFiles[];
-chooser.selectFiles( oneShotFilesList, 4 ) @=> string oneShotFiles[];
 
-spork ~ initLoops( loopFiles, 0.5 );
-spork ~ schedule( oneShotFiles, 1, 3 );
-Fader fader;
-5::second => dur fadeTime;
+fun void stanza() {
+    1 => active;
+    chooser.selectFiles( loopFilesList, 2 ) @=> string loopFiles[];
+    chooser.selectFiles( oneShotFilesList, 4 ) @=> string oneShotFiles[];
+    fxManager.initialise( dynoL, dynoR );
 
-// dyno gain out still zero - to avoid pi *hearing* the pi flaking out while the samples are loaded, tick over a couple of seconds then fade the dynos in
-2::second => now;
+    spork ~ initLoops( loopFiles, 0.5 );
+    spork ~ schedule( oneShotFiles, 1, 3 );
+    Fader fader;
+    5::second => dur fadeTime;
 
-spork ~ fader.fadeIn( fadeTime, 0.8, dynoL );
-spork ~ fader.fadeIn( fadeTime, 0.8, dynoR );
+    // dyno gain out still zero - to avoid pi *hearing* the pi flaking out while the samples are loaded, tick over a couple of seconds then fade the dynos in
+    2::second => now;
 
-20::second => now;
+    spork ~ fader.fadeIn( fadeTime, 0.8, dynoL );
+    spork ~ fader.fadeIn( fadeTime, 0.8, dynoR );
 
-spork ~ fader.fadeOut( fadeTime, dynoL );
-spork ~ fader.fadeOut( fadeTime, dynoR );
+    100::second => now;
 
-fadeTime => now;
+    spork ~ fader.fadeOut( fadeTime, dynoL );
+    spork ~ fader.fadeOut( fadeTime, dynoR );
 
-0 => active;
-spork ~ fxManager.tearDown();
-fadeTime => now;
+    fadeTime => now;
+
+    0 => active;
+    spork ~ fxManager.tearDown();
+    fadeTime => now;
+
+    FxManager newFxManager;
+    newFxManager @=> fxManager;
+}
+
+stanza();
 
 // FUNCTIONS FOLLOW
 fun void initLoops(string files[], float gain ) {
@@ -75,6 +128,10 @@ fun void initLoops(string files[], float gain ) {
 
         if ( chooser.getInt( 1, 1 ) ) {
             fxManager.connect( sample.buf );
+
+            // we've added a wet output for the sample
+            // now tell it to consider resetting its dry output
+            sample.setMixChoice();
         }
 
         sample @=> samples[ i ];
@@ -120,6 +177,7 @@ fun void playSnd( string files[] ) {
     }
     if ( fxOn ) {
         sample.buf => fxManager.connect;
+        sample.setMixChoice();
     }
 
     sample.buf.length() => now;

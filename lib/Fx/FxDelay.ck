@@ -1,6 +1,10 @@
 public class FxDelay extends Fx {
-    Echo echo;
-    input => echo => output;
+    Delay delay;
+    input => delay => output;
+    Gain feedback;
+    0.5 => feedback.gain;
+    delay => feedback;
+    feedback => input;
 
     fun string idString() {
         return "FxDelay";
@@ -9,12 +13,15 @@ public class FxDelay extends Fx {
     fun void initialise() {
         <<< "FxDelay.initialise() doing stuff" >>>;
         1 => active;
-        chooser.getDur( 0.5, 20 ) => dur echoDuration;
-        chooser.getDur( 0.02, 0.5 ) => dur length;
-        chooser.getFloat( 0.2, 0.8 ) => float echoMix;
+        chooser.getInt( 500, 2000 ) => int delayLength;
+        chooser.getInt( 500, 5000 ) => int delayMax;
+        <<< "delayLength", delayLength >>>;
+        <<< "delayMax", delayMax >>>;
+        chooser.getFloat( 0.2, 0.8 ) => float delayMix;
 
-        echo.delay( length );
-        echo.mix( echoMix );
+        delayMax::ms => delay.max;
+        delayLength::ms => delay.delay;
+        delayMix => output.gain;
 
         while ( active ) {
             1::second => now;

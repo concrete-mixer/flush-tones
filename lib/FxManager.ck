@@ -20,9 +20,7 @@ public class FxManager {
         outputR @=> outRight;
 
         outputPan.left => outLeft;
-        Echo echo;
-        chooser.getDur( 0, 0.1 ) => echo.delay;
-        outputPan.right => echo => outRight;
+        outputPan.right => outRight;
         new FxDelay @=> fxBattery[0];
         new FxFilter @=> fxBattery[1];
         new FxChorus @=> fxBattery[2];

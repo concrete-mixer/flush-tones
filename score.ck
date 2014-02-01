@@ -13,36 +13,44 @@ dynoR.limit();
 FxManager fxManager;
 
 [
-    path + "audio/santorini_cistern2.wav",
-    path + "audio/drip-no-hum-full2.wav",
-    path + "audio/drip-hum-sub2.wav",
-    path + "audio/refill-loop.wav",
-    path + "audio/refill-tickley-burble.wav",
-    path + "audio/switch-lights-loop.wav",
-    path + "audio/abashiri-aircon.wav"
+    path + "audio/loops/santorini_cistern2.wav",
+    path + "audio/loops/drip-no-hum-full2.wav",
+    path + "audio/loops/drip-hum-sub2.wav",
+    path + "audio/loops/refill-loop.wav",
+    path + "audio/loops/refill-tickley-burble.wav",
+    path + "audio/loops/switch-lights-loop.wav",
+    path + "audio/loops/abashiri-aircon.wav",
+    path + "audio/loops/139749__hybu__water-dripping-2.wav",
+    path + "audio/loops/184453__yuval__bathroom-tap-dripping"
+
 ] @=> string loopFilesList[];
 
 [
     // here follow the tuned samples
     // bassoon:
+    path + "audio/bassoon/2086_bassoon_068_4_6_1.mp3.wav",
     path + "audio/bassoon/1987_bassoon_042_3_6_1.mp3.wav",
+    path + "audio/bassoon/2318_bassoon_073_3_7_1.mp3.wav",
+    path + "audio/bassoon/2399_bassoon_034_2_9_1.mp3.wav",
+    path + "audio/bassoon/2588_bassoon_042_1_10_1.mp3.wav",
+    path + "audio/bassoon/2187_bassoon_043_2_7_1.mp3.wav",
+    path + "audio/bassoon/2212_bassoon_051_4_7_1.mp3.wav",
     path + "audio/bassoon/1989_bassoon_043_1_6_1.mp3.wav",
     path + "audio/bassoon/2028_bassoon_053_4_6_1.mp3.wav",
     path + "audio/bassoon/2073_bassoon_065_2_6_1.mp3.wav",
-    path + "audio/bassoon/2078_bassoon_066_4_6_1.mp3.wav",
-    path + "audio/bassoon/2082_bassoon_067_4_6_1.mp3.wav",
-    path + "audio/bassoon/2086_bassoon_068_4_6_1.mp3.wav",
-    path + "audio/bassoon/2166_bassoon_036_4_7_1.mp3.wav",
-    path + "audio/bassoon/2187_bassoon_043_2_7_1.mp3.wav",
-    path + "audio/bassoon/2212_bassoon_051_4_7_1.mp3.wav",
-    path + "audio/bassoon/2253_bassoon_055_3_7_1.mp3.wav",
-    path + "audio/bassoon/2318_bassoon_073_3_7_1.mp3.wav",
-    path + "audio/bassoon/2385_bassoon_077_2_7_1.mp3.wav",
-    path + "audio/bassoon/2399_bassoon_034_2_9_1.mp3.wav",
-    path + "audio/bassoon/2559_bassoon_034_4_10_1.mp3.wav",
-    path + "audio/bassoon/2588_bassoon_042_1_10_1.mp3.wav",
-    path + "audio/bassoon/2679_bassoon_068_2_10_1.mp3.wav",
     path + "audio/bassoon/2787_bassoon_055_6_3_1.mp3.wav",
+    path + "audio/bassoon/2679_bassoon_068_2_10_1.mp3.wav",
+    path + "audio/bassoon/2082_bassoon_067_4_6_1.mp3.wav",
+    path + "audio/bassoon/2253_bassoon_055_3_7_1.mp3.wav",
+    path + "audio/bassoon/2385_bassoon_077_2_7_1.mp3.wav",
+
+    // contrabassoon:
+    path + "audio/contrabassoon/4496_contrabassoon_047_5_9_16.mp3.wav",
+    path + "audio/contrabassoon/3901_contrabassoon_055_2_6_1.mp3.wav",
+    path + "audio/contrabassoon/4097_contrabassoon_024_2_9_1.mp3.wav",
+    path + "audio/contrabassoon/4475_contrabassoon_031_6_3_1.mp3.wav",
+    path + "audio/contrabassoon/4493_contrabassoon_041_5_9_16.mp3.wav",
+    path + "audio/contrabassoon/4636_contrabassoon_055_2_6_1.mp3.wav",
 
     // tuba:
     path + "audio/tuba/3228_tuba_047_3_10_23.mp3.wav",
@@ -60,7 +68,6 @@ FxManager fxManager;
 
     // saxophone:
     path + "audio/saxophone/1054_saxophone_063_2_5_1.mp3.wav",
-    path + "audio/saxophone/1516_saxophone_059_4_10_1.mp3.wav",
     path + "audio/saxophone/1029_saxophone_057_1_5_1.mp3.wav",
     path + "audio/saxophone/1494_saxophone_053_4_10_1.mp3.wav",
     path + "audio/saxophone/1502_saxophone_055_4_10_1.mp3.wav",
@@ -71,13 +78,24 @@ FxManager fxManager;
     path + "audio/saxophone/1026_saxophone_055_4_5_1.mp3.wav",
     path + "audio/saxophone/1318_saxophone_059_1_5_1.mp3.wav",
 
+    // trumpet:
+    path + "audio/trumpet/1142_trumpet_064_3_9_1.mp3.wav",
+    path + "audio/trumpet/1144_trumpet_065_2_9_1.mp3.wav",
+    path + "audio/trumpet/1370_trumpet_086_7_9_15.mp3.wav",
+    path + "audio/trumpet/1094_trumpet_079_2_5_1.mp3.wav",
+    path + "audio/trumpet/1016_trumpet_059_4_5_1.mp3.wav",
+    path + "audio/trumpet/1148_trumpet_067_3_9_1.mp3.wav",
+    path + "audio/trumpet/1147_trumpet_067_2_9_1.mp3.wav",
+    path + "audio/trumpet/978_trumpet_044_5_5_1.mp3.wav",
+
     // here follow the concrete samples
-    path + "audio/concrete-oneshot/flush-short2.wav",
+    path + "audio/concrete-oneshot/58201__the-bizniss__bathroom-recordings-gurgle2.wav",
+    path + "audio/concrete-oneshot/71218__adegenerate__24-flushing-toilet-flush-gurgle.wav",
     path + "audio/concrete-oneshot/foot-on-grill3.wav",
+    path + "audio/concrete-oneshot/flush-short2.wav",
+    path + "audio/concrete-oneshot/71218__adegenerate__24-flushing-toilet-gurgle.wav",
     path + "audio/concrete-oneshot/flush-lever-flick.wav",
-    path + "audio/concrete-oneshot/bubble-1.wav",
-    path + "audio/concrete-oneshot/bubble-2.wav",
-    path + "audio/concrete-oneshot/bubble-3.wav"
+    path + "audio/concrete-oneshot/58201__the-bizniss__bathroom-recordings-gurgle.wav"
 ] @=> string oneShotFilesList[];
 
 

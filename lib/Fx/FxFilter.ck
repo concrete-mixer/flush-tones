@@ -31,7 +31,7 @@ public class FxFilter extends Fx {
             "BPF" => filterChosen;
         }
 
-        <<< "we're going", filterChosen >>>;
+        <<< "we're going", filterChosen, "at", baseFilterFreq, "Hz" >>>;
         input => filter => output;
 
         // set baseFilterFreq
@@ -46,11 +46,17 @@ public class FxFilter extends Fx {
             float amount;
             // as a rule amount should be less than basefreq over 2
             chooser.getFloat( baseFilterFreq / 2, baseFilterFreq / 2 + baseFilterFreq / 4 ) => amount;
+
             // determine oscillation function
             // square doesn't work very well, so we're defining our own
-            [ "sine", "sampleHold" ] @=> string oscTypes[];
-            chooser.getInt(0,1) => int choice;
-            oscTypes[ choice ] => string oscType;
+            "sine" => string oscType;
+
+            // sampleHold is cool, but better in small doses
+            chooser.getInt(0,3) => int choice;
+            if ( choice == 0 ) {
+                "sampleHold" => oscType;
+            }
+
             <<< "we're oscillating with", oscType >>>;
             chooser.getFloat( 0.05, 0.5 ) => float lfoFreq;
 

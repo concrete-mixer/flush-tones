@@ -3,15 +3,15 @@ public class FxManager {
     Panner panner;
     Fader fader;
 
-    3 => int maxConcurrentFx;
+    2 => int maxConcurrentFx;
     Gain inputGain;
-    0.8 => inputGain.gain;
+    0.7 => inputGain.gain;
     Pan2 outputPan;
-    0.8 => outputPan.gain;
+    0.7 => outputPan.gain;
 
     // spork ~ panner.initialise(outputPan);
     Fx @ fxChain[ maxConcurrentFx ];
-    Fx @ fxBattery[4];
+    Fx @ fxBattery[5];
 
     UGen outLeft, outRight;
 
@@ -21,10 +21,12 @@ public class FxManager {
 
         outputPan.left => outLeft;
         outputPan.right => outRight;
+
         new FxDelay @=> fxBattery[0];
         new FxFilter @=> fxBattery[1];
         new FxChorus @=> fxBattery[2];
         new FxReverb @=> fxBattery[3];
+        new FxPhaser @=> fxBattery[4];
 
         fxChainBuild();
     }

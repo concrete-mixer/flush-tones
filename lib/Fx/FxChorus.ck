@@ -11,13 +11,13 @@ public class FxChorus extends Fx {
         float depth;
 
         if ( freq < 1 ) {
-            chooser.getFloat( 0.3, 0.8 ) => depth;
+            chooser.getFloat( 0.1, 0.3 ) => depth;
         }
         else {
             chooser.getFloat( 0.05, 0.10 ) => depth;
         }
 
-        chooser.getFloat( 0.3, 0.7 ) => float mix;
+        chooser.getFloat( 0.1, 0.6 ) => float mix;
 
         freq => chorus.modFreq;
         <<< "Chorus: freq", freq, "depth", depth, "mix", mix >>>;

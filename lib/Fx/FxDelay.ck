@@ -13,15 +13,14 @@ public class FxDelay extends Fx {
     fun void initialise() {
         <<< "FxDelay.initialise() doing stuff" >>>;
         1 => active;
-        chooser.getInt( 500, 2000 ) => int delayLength;
-        chooser.getInt( 500, 5000 ) => int delayMax;
-        <<< "delayLength", delayLength >>>;
-        <<< "delayMax", delayMax >>>;
-        chooser.getFloat( 0.2, 0.8 ) => float delayMix;
+        chooser.getInt( 200, 2000 ) => int delayLength;
+        2000 => int delayMax;
+        chooser.getFloat( 0.4, 0.7 ) => float delayMix;
+        <<< "delayLength", delayLength, "delayMax", delayMax, "delayMix", delayMix >>>;
 
         delayMax::ms => delay.max;
         delayLength::ms => delay.delay;
-        delayMix => output.gain;
+        delayMix => feedback.gain;
 
         while ( active ) {
             1::second => now;

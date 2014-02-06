@@ -18,10 +18,9 @@ FxManager fxManager;
     path + "audio/loops/drip-hum-sub2.wav",
     path + "audio/loops/refill-loop.wav",
     path + "audio/loops/refill-tickley-burble.wav",
-    path + "audio/loops/switch-lights-loop.wav",
     path + "audio/loops/abashiri-aircon.wav",
     path + "audio/loops/139749__hybu__water-dripping-2.wav",
-    path + "audio/loops/184453__yuval__bathroom-tap-dripping"
+    path + "audio/loops/184453__yuval__bathroom-tap-dripping.wav"
 
 ] @=> string loopFilesList[];
 
@@ -176,7 +175,6 @@ fun void schedule( string files[], int waitMin, int waitMax ) {
         else {
             dur waitTime;
             chooser.getWait( waitMin, waitMax ) => waitTime;
-            <<< "passing time", waitTime / 44100 >>>;
             waitTime => now;
         }
     }
@@ -187,7 +185,8 @@ fun void playSnd( string files[] ) {
     Sample sample;
 
     chooser.takeAction( 3 ) => int fxOn;
-    spork ~ sample.initialise( files[choice], 0, 0.25, dynoL, dynoR );
+    <<< "playing", files[choice] >>>;
+    spork ~ sample.initialise( files[choice], 0, 0.8, dynoL, dynoR );
 
     // this is a bit ugly, but we have to spork the line above and wait...
     until ( sample.buf.length() ) {

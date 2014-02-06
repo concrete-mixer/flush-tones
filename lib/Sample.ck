@@ -3,6 +3,7 @@ public class Sample {
     "out" => string fadeState;
     1 => int active;
     Chooser chooser;
+    string filepath;
 
     // use PainGain's gain by default
     SndBuf buf;
@@ -10,7 +11,8 @@ public class Sample {
     0.5 => float maxGain;
     UGen outLeft, outRight;
 
-    fun void initialise(string filepath, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
+    fun void initialise(string filepathIn, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
+        filepathIn => filepath;
         buf.read( filepath );
         buf.loop( loop );
         filepath => buf.read;
@@ -73,18 +75,18 @@ public class Sample {
     // its dry output
     // useful for providing variation when using fx chains
     fun void setMixChoice() {
-        chooser.getInt( 0, 3 ) => int mixChoice;
+        chooser.getInt( 0, 4 ) => int mixChoice;
 
         // if mixChoice is 0, kill dry output
         // if 1, halve volume
         // if 2-3 keep dry volume normal
         if ( !mixChoice ) {
             // set sample dry out to 0
-            <<< "killing dry!" >>>;
+            <<< "Setting dry output for", filepath, " to 0" >>>;
             0 => setMix;
         }
         else if ( mixChoice == 1 ) {
-            <<< "halving dry!" >>>;
+            <<< "Halving dry output for", filepath >>>;
             // halve dry gain
             buf.gain() / 2 => setMix;
         }

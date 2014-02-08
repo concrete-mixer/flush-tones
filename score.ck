@@ -13,15 +13,16 @@ dynoR.limit();
 FxManager fxManager;
 
 [
-    path + "audio/loops/santorini_cistern2.wav",
-    path + "audio/loops/drip-no-hum-full2.wav",
+    path + "audio/loops/139749__hybu__water-dripping-2.wav",
+    path + "audio/loops/184453__yuval__bathroom-tap-dripping.wav",
+    path + "audio/loops/abashiri-aircon.wav",
+    path + "audio/loops/basin-loop.wav",
     path + "audio/loops/drip-hum-sub2.wav",
+    path + "audio/loops/drip-no-hum-full2.wav",
+    path + "audio/loops/northland-fanloop.wav",
     path + "audio/loops/refill-loop.wav",
     path + "audio/loops/refill-tickley-burble.wav",
-    path + "audio/loops/abashiri-aircon.wav",
-    path + "audio/loops/139749__hybu__water-dripping-2.wav",
-    path + "audio/loops/184453__yuval__bathroom-tap-dripping.wav"
-
+    path + "audio/loops/santorini_cistern2.wav"
 ] @=> string loopFilesList[];
 
 [
@@ -89,12 +90,14 @@ FxManager fxManager;
 
     // here follow the concrete samples
     path + "audio/concrete-oneshot/58201__the-bizniss__bathroom-recordings-gurgle2.wav",
+    path + "audio/concrete-oneshot/58201__the-bizniss__bathroom-recordings-gurgle.wav",
     path + "audio/concrete-oneshot/71218__adegenerate__24-flushing-toilet-flush-gurgle.wav",
+    path + "audio/concrete-oneshot/71218__adegenerate__24-flushing-toilet-gurgle.wav",
     path + "audio/concrete-oneshot/foot-on-grill3.wav",
     path + "audio/concrete-oneshot/flush-short2.wav",
-    path + "audio/concrete-oneshot/71218__adegenerate__24-flushing-toilet-gurgle.wav",
-    path + "audio/concrete-oneshot/flush-lever-flick.wav",
-    path + "audio/concrete-oneshot/58201__the-bizniss__bathroom-recordings-gurgle.wav"
+    path + "audio/concrete-oneshot/northland-flush.wav",
+    path + "audio/concrete-oneshot/switch-lights-loop.wav",
+    path + "audio/concrete-oneshot/soap-bubble-gurgle.wav"
 ] @=> string oneShotFilesList[];
 
 
@@ -115,7 +118,7 @@ fun void stanza() {
     spork ~ fader.fadeIn( fadeTime, 0.8, dynoL );
     spork ~ fader.fadeIn( fadeTime, 0.8, dynoR );
 
-    100::second => now;
+    60::second => now;
 
     spork ~ fader.fadeOut( fadeTime, dynoL );
     spork ~ fader.fadeOut( fadeTime, dynoR );

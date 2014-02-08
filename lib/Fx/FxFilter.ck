@@ -38,14 +38,14 @@ public class FxFilter extends Fx {
         baseFilterFreq => filter.freq;
 
         // set Q between 1 and 5
-        chooser.getFloat( 5, 13 ) => float Q;
+        chooser.getFloat( 5, 10 ) => float Q;
         Q => filter.Q;
 
         // determine whether to oscillate (mostly yes)
         if ( chooser.takeAction( 1 ) ) {
             float amount;
             // as a rule amount should be less than basefreq over 2
-            chooser.getFloat( baseFilterFreq / 2, baseFilterFreq / 2 + baseFilterFreq / 4 ) => amount;
+            chooser.getFloat( baseFilterFreq / 3, baseFilterFreq / 3 + baseFilterFreq / 6 ) => amount;
 
             // determine oscillation function
             // square doesn't work very well, so we're defining our own

@@ -26,7 +26,7 @@ public class FxManager {
         new FxFilter @=> fxBattery[1];
         new FxChorus @=> fxBattery[2];
         new FxReverb @=> fxBattery[3];
-        new FxPhaser @=> fxBattery[4];
+        new FxFlanger @=> fxBattery[4];
 
         fxChainBuild();
     }

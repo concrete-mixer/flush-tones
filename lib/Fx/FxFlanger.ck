@@ -12,7 +12,7 @@ public class FxFlanger extends Fx {
         // choose to go with slow and heavy flange
         // or fast and light
         chooser.getInt( 1, 2 ) => int flangeType;
-2 => flangeType;
+
         // 1 == slow
         if ( flangeType == 1 ) {
             chooser.getFloat( 0.05, 0.25 ) => oscFreq;

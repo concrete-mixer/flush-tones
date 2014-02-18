@@ -19,8 +19,21 @@ public class FxManager {
         outputL @=> outLeft;
         outputR @=> outRight;
 
-        outputPan.left => outLeft;
-        outputPan.right => outRight;
+        // Fx chain is mono, let's make a little cheap stereo
+        Delay delay;
+        5::ms => delay.delay;
+
+        // should left side be delayed or right?
+        if ( chooser.getInt( 0, 1 ) ) {
+            <<< "RIGHT" >>>;
+            outputPan.left => outLeft;
+            outputPan.right => delay => outRight;
+        }
+        else {
+            <<< "LEFT" >>>;
+            outputPan.left => delay => outLeft;
+            outputPan.right => outRight;
+        }
 
         new FxDelay @=> fxBattery[0];
         new FxFilter @=> fxBattery[1];

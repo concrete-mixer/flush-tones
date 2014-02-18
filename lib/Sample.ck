@@ -30,6 +30,11 @@ public class Sample {
             reverseSchedule();
         }
         else {
+            if ( chooser.getInt( 1, 6 ) == 1 ) {
+                <<< "REVERSING ONE SHOT" >>>;
+                setRate( -1.0 );
+            }
+
             chooser.getFloat( -1.0, 1.0 ) => pan.pan;
             endGain => buf.gain;
             buf.length() => now;
@@ -44,7 +49,7 @@ public class Sample {
         while ( active ) {
             chooser.getDur( 3, 8 ) => dur duration;
 
-            if ( chooser.takeAction( 3 ) ) {
+            if ( chooser.takeAction( 4 ) ) {
                 reverse( duration );
             }
             else {

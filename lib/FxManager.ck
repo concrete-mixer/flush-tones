@@ -11,7 +11,7 @@ public class FxManager {
 
     // spork ~ panner.initialise(outputPan);
     Fx @ fxChain[ maxConcurrentFx ];
-    Fx @ fxBattery[5];
+    Fx @ fxBattery[6];
 
     UGen outLeft, outRight;
 
@@ -21,7 +21,7 @@ public class FxManager {
 
         // Fx chain is mono, let's make a little cheap stereo
         Delay delay;
-        5::ms => delay.delay;
+        chooser.getDur( 0.001, 0.005 ) => delay.delay;
 
         // should left side be delayed or right?
         if ( chooser.getInt( 0, 1 ) ) {
@@ -40,6 +40,7 @@ public class FxManager {
         new FxChorus @=> fxBattery[2];
         new FxReverb @=> fxBattery[3];
         new FxFlanger @=> fxBattery[4];
+        new FxDelayVariable @=> fxBattery[5];
 
         fxChainBuild();
     }

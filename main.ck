@@ -7,6 +7,7 @@ Machine.add(lib_path + "/Sample.ck");
 Machine.add(lib_path + "/Fx.ck");
 Machine.add(lib_path + "/Fx/FxPhaser.ck");
 Machine.add(lib_path + "/Fx/FxDelay.ck");
+Machine.add(lib_path + "/Fx/FxDelayVariable.ck");
 Machine.add(lib_path + "/Fx/FxChorus.ck");
 Machine.add(lib_path + "/Fx/FxReverb.ck");
 Machine.add(lib_path + "/Fx/FxFilter.ck");

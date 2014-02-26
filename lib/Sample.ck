@@ -80,18 +80,16 @@ public class Sample {
     // its dry output
     // useful for providing variation when using fx chains
     fun void setMixChoice() {
-        chooser.getInt( 0, 4 ) => int mixChoice;
+        chooser.getInt( 0, 8 ) => int mixChoice;
 
         // if mixChoice is 0, kill dry output
-        // if 1, halve volume
-        // if 2-3 keep dry volume normal
+        // if 1-6, keep dry volume normal
+        // if 7-8, halve volume
         if ( !mixChoice ) {
             // set sample dry out to 0
-            <<< "Setting dry output for", filepath, " to 0" >>>;
             0 => setMix;
         }
-        else if ( mixChoice == 1 ) {
-            <<< "Halving dry output for", filepath >>>;
+        else if ( mixChoice > 6 ) {
             // halve dry gain
             buf.gain() / 2 => setMix;
         }

@@ -52,10 +52,11 @@ public class FxFilter extends Fx {
             "sine" => string oscType;
 
             // sampleHold is cool, but better in small doses
-            chooser.getInt(0,3) => int choice;
-            if ( choice == 0 ) {
-                "sampleHold" => oscType;
-            }
+            // Actually, I've now decided sample hold is not cool at all
+            // chooser.getInt(0,3) => int choice;
+            // if ( choice == 0 ) {
+            //     "sampleHold" => oscType;
+            // }
 
             chooser.getFloat( 0.05, 0.5 ) => float lfoFreq;
 

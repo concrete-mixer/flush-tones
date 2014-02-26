@@ -31,7 +31,6 @@ public class FxFilter extends Fx {
             "BPF" => filterChosen;
         }
 
-        <<< "we're going", filterChosen, "at", baseFilterFreq, "Hz" >>>;
         input => filter => output;
 
         // set baseFilterFreq
@@ -40,6 +39,7 @@ public class FxFilter extends Fx {
         // set Q between 1 and 5
         chooser.getFloat( 5, 10 ) => float Q;
         Q => filter.Q;
+        <<< "FxFilter:", filterChosen, "at", baseFilterFreq, "Hz", Q, "q" >>>;
 
         // determine whether to oscillate (mostly yes)
         if ( chooser.takeAction( 1 ) ) {
@@ -57,7 +57,6 @@ public class FxFilter extends Fx {
                 "sampleHold" => oscType;
             }
 
-            <<< "we're oscillating with", oscType >>>;
             chooser.getFloat( 0.05, 0.5 ) => float lfoFreq;
 
             // sample hold is better when its faster...

@@ -49,9 +49,15 @@ public class FxFlanger extends Fx {
     }
 
     fun string getOscType() {
-        [ "sine", "sampleHold" ] @=> string oscTypes[];
-        chooser.getInt( 0, oscTypes.cap() - 1) => int key;
+        chooser.getInt( 1, 4 ) => int choice;
 
-        return oscTypes[key];
+        // sine is best but sampleHold on flange is a bit of
+        // a novelty, so keeping
+        if ( choice == 1 ) {
+            return "sampleHold";
+        }
+        else {
+            return "sine";
+        }
     }
 }

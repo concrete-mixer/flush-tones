@@ -49,7 +49,7 @@ public class Sample {
         while ( active ) {
             chooser.getDur( 3, 8 ) => dur duration;
 
-            if ( chooser.takeAction( 4 ) ) {
+            if ( chooser.takeAction( 8 ) ) {
                 reverse( duration );
             }
             else {

@@ -11,7 +11,6 @@ public class FxDelayVariable extends Fx {
     }
 
     fun void initialise() {
-        <<< "FxDelay.initialise() doing stuff" >>>;
         1 => active;
         2000::ms => delay.max;
 
@@ -19,9 +18,6 @@ public class FxDelayVariable extends Fx {
             chooser.getDur( 0.05, 0.50 ) => dur dur;
             dur => now;
             chooser.getDur( 0.05, 0.50 ) => delay.delay;
-            <<< "duration", dur / 44100, "delay", delay.delay() / 44100 >>>;
         }
-
-        <<< "FxDelay.execute(): completing FxDelay" >>>;
     }
 }

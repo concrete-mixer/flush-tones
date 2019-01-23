@@ -3,6 +3,11 @@ Chooser chooser;
 Dyno dynoL => dac.left;
 Dyno dynoR => dac.right;
 
+WvOut2 wv;
+"flush" => wv.autoPrefix;
+"special:auto" => wv.wavFilename;
+dac => wv => blackhole;
+
 0 => dynoL.gain;
 0 => dynoR.gain;
 

@@ -1,0 +1,3 @@
+cwd=.
+source_files=audio/loops
+path_to_chuck=/usr/local/bin/chuck

@@ -17,108 +17,57 @@ dynoR.limit();
 
 FxManager fxManager;
 
-[
-    path + "audio/loops/139749__hybu__water-dripping-2.wav",
-    path + "audio/loops/184453__yuval__bathroom-tap-dripping.wav",
-    path + "audio/loops/abashiri-aircon.wav",
-    path + "audio/loops/basin-loop.wav",
-    path + "audio/loops/cistern-and-hand-dry.wav",
-    path + "audio/loops/cistern-jangle.wav",
-    path + "audio/loops/cistern-refill-loop.wav",
-    path + "audio/loops/cistern-refill-loop2.wav",
-    path + "audio/loops/cistern-refill-loop3.wav",
-    path + "audio/loops/cistern-refill4.wav",
-    path + "audio/loops/cistern-releasing.wav",
-    path + "audio/loops/drip-hum-sub2.wav",
-    path + "audio/loops/drip-no-hum-full2.wav",
-    path + "audio/loops/handwash.wav",
-    path + "audio/loops/long-dribble-resampled.wav",
-    path + "audio/loops/northland-fanloop.wav",
-    path + "audio/loops/refill-loop.wav",
-    path + "audio/loops/refill-tickley-burble.wav",
-    path + "audio/loops/santorini_cistern2.wav"
-] @=> string loopFilesList[];
+_setFiles(["audio/loops"]) @=> string loopFilesList[];
 
 [
-    // here follow the tuned samples
-    // bassoon:
-    path + "audio/one-shot/instrumental/bassoon/2086_bassoon_068_4_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/1987_bassoon_042_3_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2318_bassoon_073_3_7_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2399_bassoon_034_2_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2588_bassoon_042_1_10_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2187_bassoon_043_2_7_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2212_bassoon_051_4_7_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/1989_bassoon_043_1_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2028_bassoon_053_4_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2073_bassoon_065_2_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2787_bassoon_055_6_3_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2679_bassoon_068_2_10_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2082_bassoon_067_4_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2253_bassoon_055_3_7_1.mp3.wav",
-    path + "audio/one-shot/instrumental/bassoon/2385_bassoon_077_2_7_1.mp3.wav",
+    "audio/one-shot/instrumental/saxophone",
+    "audio/one-shot/instrumental/trumpet",
+    "audio/one-shot/instrumental/tuba",
+    "audio/one-shot/instrumental/bassoon",
+    "audio/one-shot/instrumental/contra-bassoon",
+    "audio/one-shot/concrete"
+] @=> string oneShotFileDirs[];
 
-    // contrabassoon:
-    path + "audio/one-shot/instrumental/contrabassoon/4496_contrabassoon_047_5_9_16.mp3.wav",
-    path + "audio/one-shot/instrumental/contrabassoon/3901_contrabassoon_055_2_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/contrabassoon/4097_contrabassoon_024_2_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/contrabassoon/4475_contrabassoon_031_6_3_1.mp3.wav",
-    path + "audio/one-shot/instrumental/contrabassoon/4493_contrabassoon_041_5_9_16.mp3.wav",
-    path + "audio/one-shot/instrumental/contrabassoon/4636_contrabassoon_055_2_6_1.mp3.wav",
+_setFiles(oneShotFileDirs) @=> string oneShotFilesList[];
 
-    // tuba:
-    path + "audio/one-shot/instrumental/tuba/3228_tuba_047_3_10_23.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/2632_tuba_031_4_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/3127_tuba_045_5_8_11.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/3171_tuba_039_3_9_16.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/2879_tuba_022_5_8_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/3103_tuba_053_2_10_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/3062_tuba_031_2_10_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/2466_tuba_032_1_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/2986_tuba_025_5_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/2513_tuba_043_4_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/2748_tuba_023_5_7_1.mp3.wav",
-    path + "audio/one-shot/instrumental/tuba/3131_tuba_057_5_8_11.mp3.wav",
+stanza();
 
-    // saxophone:
-    path + "audio/one-shot/instrumental/saxophone/1054_saxophone_063_2_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1029_saxophone_057_1_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1494_saxophone_053_4_10_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1502_saxophone_055_4_10_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1811_saxophone_067_3_6_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1069_saxophone_068_3_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1037_saxophone_058_1_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1390_saxophone_057_2_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1026_saxophone_055_4_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/saxophone/1318_saxophone_059_1_5_1.mp3.wav",
+Machine.add("score.ck");
 
-    // trumpet:
-    path + "audio/one-shot/instrumental/trumpet/1142_trumpet_064_3_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/1144_trumpet_065_2_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/1370_trumpet_086_7_9_15.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/1094_trumpet_079_2_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/1016_trumpet_059_4_5_1.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/1148_trumpet_067_3_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/1147_trumpet_067_2_9_1.mp3.wav",
-    path + "audio/one-shot/instrumental/trumpet/978_trumpet_044_5_5_1.mp3.wav",
+// FUNCTIONS FOLLOW
+fun string[] _setFiles(string fileDirs[]) {
+    FileIO fileList;
 
-    // here follow the concrete samples
-    path + "audio/one-shot/concrete/58201__the-bizniss__bathroom-recordings-gurgle2.wav",
-    path + "audio/one-shot/concrete/abrupt.wav",
-    path + "audio/one-shot/concrete/switch-lights-loop.wav",
-    path + "audio/one-shot/concrete/71218__adegenerate__24-flushing-toilet-flush-gurgle.wav",
-    path + "audio/one-shot/concrete/another-death-rattle.wav",
-    path + "audio/one-shot/concrete/drain-expiry.wav",
-    path + "audio/one-shot/concrete/handwash.wav",
-    path + "audio/one-shot/concrete/foot-on-grill3.wav",
-    path + "audio/one-shot/concrete/flush-short2.wav",
-    path + "audio/one-shot/concrete/71218__adegenerate__24-flushing-toilet-gurgle.wav",
-    path + "audio/one-shot/concrete/flush-lever-flick.wav",
-    path + "audio/one-shot/concrete/58201__the-bizniss__bathroom-recordings-gurgle.wav",
-    path + "audio/one-shot/concrete/urinal-cistern-release1.wav",
-    path + "audio/one-shot/concrete/urinal-cistern-release2.wav"
-] @=> string oneShotFilesList[];
+    string allFiles[0];
 
+    for (0 => int i; i < fileDirs.cap(); i++) {
+        fileDirs[i] => string dirPath;
+        fileList.open(me.dir() + dirPath);
+
+        _processFileList( fileList.dirList(), me.dir() + dirPath) @=> string files[];
+
+        fileList.close();
+
+        for (0 => int j; j < files.cap(); j++) {
+            <<< files[j] >>>;
+            allFiles << files[j];
+        }
+    }
+
+    return allFiles;
+}
+
+fun string[] _processFileList( string fileList[], string path ) {
+    string soundsFound[0];
+
+    for ( 0 => int i; i < fileList.cap(); i++ ) {
+        if ( RegEx.match(".(wav|aif|aiff)$", fileList[i]) ) {
+            soundsFound << path + "/" + fileList[i];
+        }
+    }
+
+    return soundsFound;
+}
 
 fun void stanza() {
     1 => active;
@@ -152,9 +101,6 @@ fun void stanza() {
     newFxManager @=> fxManager;
 }
 
-stanza();
-
-// FUNCTIONS FOLLOW
 fun void initLoops(string files[], float gain ) {
     printFiles( files );
 

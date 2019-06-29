@@ -18,27 +18,25 @@ dynoR.limit();
 FxManager fxManager;
 
 [
-    path + "audio/loops/cistern-refill-loop2.wav",
     path + "audio/loops/139749__hybu__water-dripping-2.wav",
-    path + "audio/loops/northland-fanloop.wav",
-    path + "audio/loops/abashiri-aircon.wav",
-    path + "audio/loops/long-dribble-resampled.wav",
-    path + "audio/loops/refill-tickley-burble.wav",
-    path + "audio/loops/urinal-cistern-release1.wav",
-    path + "audio/loops/santorini_cistern2.wav",
-    path + "audio/loops/handwash.wav",
-    path + "audio/loops/cistern-refill4.wav",
-    path + "audio/loops/cistern-and-hand-dry.wav",
-    path + "audio/loops/cistern-refill-loop3.wav",
-    path + "audio/loops/basin-loop.wav",
-    path + "audio/loops/cistern-releasing.wav",
-    path + "audio/loops/urinal-cistern-release2.wav",
-    path + "audio/loops/refill-loop.wav",
     path + "audio/loops/184453__yuval__bathroom-tap-dripping.wav",
+    path + "audio/loops/abashiri-aircon.wav",
+    path + "audio/loops/basin-loop.wav",
+    path + "audio/loops/cistern-and-hand-dry.wav",
     path + "audio/loops/cistern-jangle.wav",
     path + "audio/loops/cistern-refill-loop.wav",
+    path + "audio/loops/cistern-refill-loop2.wav",
+    path + "audio/loops/cistern-refill-loop3.wav",
+    path + "audio/loops/cistern-refill4.wav",
+    path + "audio/loops/cistern-releasing.wav",
+    path + "audio/loops/drip-hum-sub2.wav",
     path + "audio/loops/drip-no-hum-full2.wav",
-    path + "audio/loops/drip-hum-sub2.wav"
+    path + "audio/loops/handwash.wav",
+    path + "audio/loops/long-dribble-resampled.wav",
+    path + "audio/loops/northland-fanloop.wav",
+    path + "audio/loops/refill-loop.wav",
+    path + "audio/loops/refill-tickley-burble.wav",
+    path + "audio/loops/santorini_cistern2.wav"
 ] @=> string loopFilesList[];
 
 [
@@ -116,7 +114,9 @@ FxManager fxManager;
     path + "audio/one-shot/concrete/flush-short2.wav",
     path + "audio/one-shot/concrete/71218__adegenerate__24-flushing-toilet-gurgle.wav",
     path + "audio/one-shot/concrete/flush-lever-flick.wav",
-    path + "audio/one-shot/concrete/58201__the-bizniss__bathroom-recordings-gurgle.wav"
+    path + "audio/one-shot/concrete/58201__the-bizniss__bathroom-recordings-gurgle.wav",
+    path + "audio/one-shot/concrete/urinal-cistern-release1.wav",
+    path + "audio/one-shot/concrete/urinal-cistern-release2.wav"
 ] @=> string oneShotFilesList[];
 
 

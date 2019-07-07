@@ -13,6 +13,13 @@ public class FxManager {
     Fx @ fxChain[ maxConcurrentFx ];
     Fx @ fxBattery[6];
 
+    new FxDelay @=> fxBattery[0];
+    new FxFilter @=> fxBattery[1];
+    new FxChorus @=> fxBattery[2];
+    new FxReverb @=> fxBattery[3];
+    new FxFlanger @=> fxBattery[4];
+    new FxDelayVariable @=> fxBattery[5];
+
     UGen outLeft, outRight;
 
     fun void initialise( UGen outputL, UGen outputR ) {
@@ -34,13 +41,6 @@ public class FxManager {
             outputPan.left => delay => outLeft;
             outputPan.right => outRight;
         }
-
-        new FxDelay @=> fxBattery[0];
-        new FxFilter @=> fxBattery[1];
-        new FxChorus @=> fxBattery[2];
-        new FxReverb @=> fxBattery[3];
-        new FxFlanger @=> fxBattery[4];
-        new FxDelayVariable @=> fxBattery[5];
 
         fxChainBuild();
     }
@@ -125,8 +125,7 @@ public class FxManager {
 
         Fx fxChainNew[ maxConcurrentFx ];
         fxChainNew @=> fxChain;
-        Fx fxBatteryNew[ 4 ];
-        fxBatteryNew @=> fxBattery;
+
         <<< "disengaging outputPan from dynos">>>;
         outputPan.left =< outLeft;
         outputPan.right =< outRight;

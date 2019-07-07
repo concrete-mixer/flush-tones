@@ -3,16 +3,12 @@ Chooser chooser;
 Dyno dynoL => dac.left;
 Dyno dynoR => dac.right;
 
-WvOut2 wv;
-"flush" => wv.autoPrefix;
-"special:auto" => wv.wavFilename;
-dac => wv => blackhole;
+dynoL.limit();
+dynoR.limit();
 
 0 => dynoL.gain;
 0 => dynoR.gain;
 
-dynoL.limit();
-dynoR.limit();
 1 => int active;
 
 FxManager fxManager;
@@ -24,15 +20,21 @@ _setFiles(["audio/loops"]) @=> string loopFilesList[];
     "audio/one-shot/instrumental/trumpet",
     "audio/one-shot/instrumental/tuba",
     "audio/one-shot/instrumental/bassoon",
-    "audio/one-shot/instrumental/contra-bassoon",
+    "audio/one-shot/instrumental/contrabassoon",
     "audio/one-shot/concrete"
 ] @=> string oneShotFileDirs[];
 
 _setFiles(oneShotFileDirs) @=> string oneShotFilesList[];
 
-stanza();
+5 => int oneShotBufsCount;
+2 => int loopFileBufsCount;
 
-Machine.add("score.ck");
+SndBuf2 oneShotBufs[oneShotBufsCount];
+SndBuf2 loopFileBufs[loopFileBufsCount];
+
+while ( true ) {
+    stanza();
+}
 
 // FUNCTIONS FOLLOW
 fun string[] _setFiles(string fileDirs[]) {
@@ -49,7 +51,6 @@ fun string[] _setFiles(string fileDirs[]) {
         fileList.close();
 
         for (0 => int j; j < files.cap(); j++) {
-            <<< files[j] >>>;
             allFiles << files[j];
         }
     }
@@ -72,7 +73,7 @@ fun string[] _processFileList( string fileList[], string path ) {
 fun void stanza() {
     1 => active;
     chooser.selectFiles( loopFilesList, 2 ) @=> string loopFiles[];
-    chooser.selectFiles( oneShotFilesList, 4 ) @=> string oneShotFiles[];
+    chooser.selectFiles( oneShotFilesList, 5 ) @=> string oneShotFiles[];
     fxManager.initialise( dynoL, dynoR );
 
     spork ~ initLoops( loopFiles, 0.5 );
@@ -96,23 +97,22 @@ fun void stanza() {
     0 => active;
     spork ~ fxManager.tearDown();
     fadeTime => now;
-
-    FxManager newFxManager;
-    newFxManager @=> fxManager;
 }
 
 fun void initLoops(string files[], float gain ) {
-    printFiles( files );
+    // Useful for debug
+    // printFiles( files );
 
     Sample @ samples[ files.cap() ];
 
     for ( 0 => int i; i < files.cap(); i++ ) {
         Sample sample;
+
         <<< "sporking", files[i] >>>;
-        spork ~ sample.initialise( files[i], 1, gain, dynoL, dynoR );
+        spork ~ sample.initialise(files[i], loopFileBufs[i], 1, gain, dynoL, dynoR );
 
         if ( chooser.getInt( 1, 1 ) ) {
-            fxManager.connect( sample.buf );
+            fxManager.connect( loopFileBufs[i] );
 
             // we've added a wet output for the sample
             // now tell it to consider resetting its dry output
@@ -136,36 +136,34 @@ fun void initLoops(string files[], float gain ) {
 
 // plan here is generate a random sequence of samples
 fun void schedule( string files[], int waitMin, int waitMax ) {
+    dur waitTime;
+
     while ( active ) {
         if ( chooser.takeAction( 3 ) ) {
-            playSnd( files );
+            playSnd( oneShotBufs, files );
         }
         else {
-            dur waitTime;
             chooser.getWait( waitMin, waitMax ) => waitTime;
             waitTime => now;
         }
     }
 }
 
-fun void playSnd( string files[] ) {
-    chooser.getInt( 0, files.cap() - 1 ) => int choice;
+fun void playSnd(SndBuf2 bufs[], string files[] ) {
+    chooser.getInt( 0, bufs.cap() - 1 ) => int choice;
     Sample sample;
 
     chooser.takeAction( 3 ) => int fxOn;
     <<< "playing", files[choice] >>>;
-    spork ~ sample.initialise( files[choice], 0, 0.8, dynoL, dynoR );
+    spork ~ sample.initialise(files[choice], bufs[choice], 0, 0.8, dynoL, dynoR );
 
-    // this is a bit ugly, but we have to spork the line above and wait...
-    until ( sample.buf.length() ) {
-        1::ms => now;
-    }
     if ( fxOn ) {
         sample.buf => fxManager.connect;
         sample.setMixChoice();
     }
 
     sample.buf.length() => now;
+
     sample.tearDown();
 
     if ( fxOn ) {

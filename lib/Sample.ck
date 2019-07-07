@@ -6,14 +6,14 @@ public class Sample {
     string filepath;
 
     // use PainGain's gain by default
-    SndBuf buf;
     Pan2 pan;
     0.5 => float maxGain;
     UGen outLeft, outRight;
+    SndBuf2 buf;
 
-    fun void initialise(string filepathIn, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
-        filepathIn => filepath;
-        buf.read( filepath );
+    fun void initialise(string filepathIn, SndBuf2 bufIn, int loop, float endGain, UGen outputLeft, UGen outputRight ) {
+        filepathIn @=> filepath;
+        bufIn => buf;
         buf.loop( loop );
         filepath => buf.read;
         endGain => maxGain;
@@ -21,8 +21,8 @@ public class Sample {
 
         outputLeft @=> outLeft;
         outputRight @=> outRight;
-        pan.left => outputLeft; // left
-        pan.right => outputRight; // right
+        pan.left => outputLeft;
+        pan.right => outputRight;
 
         if ( loop ) {
             Panner panner;
@@ -70,6 +70,7 @@ public class Sample {
 
     fun void tearDown() {
         0 => active;
+        0 => buf.loop;
         fader.fadeOut( 2::second, buf );
         buf =< pan;
         pan.left =< outLeft;
@@ -99,4 +100,3 @@ public class Sample {
         0 => pan.gain;
     }
 }
-

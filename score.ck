@@ -32,9 +32,7 @@ _setFiles(oneShotFileDirs) @=> string oneShotFilesList[];
 SndBuf2 oneShotBufs[oneShotBufsCount];
 SndBuf2 loopFileBufs[loopFileBufsCount];
 
-while ( true ) {
-    stanza();
-}
+stanza();
 
 // FUNCTIONS FOLLOW
 fun string[] _setFiles(string fileDirs[]) {

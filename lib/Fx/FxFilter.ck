@@ -1,16 +1,15 @@
 public class FxFilter extends Fx {
     FilterBasic filter;
     LFO lfo;
-
+    float amount, lfoFreq, baseFilterFreq, Q;
     fun string idString() { return "FxFilter"; }
 
     fun void initialise() {
-        chooser.getInt( 0, 2 ) => int typeChoice;
+        chooser.getInt( 1, 2 ) => int typeChoice;
 
         // baseFilterFreq is base frequency for filter
         // may or may not end up being oscillated
         float baseFilterFreq;
-        chooser.getFloat( 400, 800 ) => baseFilterFreq;
 
         string filterChosen;
 
@@ -19,6 +18,7 @@ public class FxFilter extends Fx {
 
             // for lpf, we want a lowish base freq
             "LPF" => filterChosen;
+            chooser.getFloat( 700, 1500 ) => baseFilterFreq;
         }
 
         if ( typeChoice == 1 ) {
@@ -37,7 +37,7 @@ public class FxFilter extends Fx {
         baseFilterFreq => filter.freq;
 
         // set Q between 1 and 5
-        chooser.getFloat( 5, 10 ) => float Q;
+        chooser.getFloat( 1, 5 ) => float Q;
         Q => filter.Q;
         <<< "FxFilter:", filterChosen, "at", baseFilterFreq, "Hz", Q, "q" >>>;
 

@@ -18,6 +18,12 @@ foreach my $row ( @config_rows ) {
 }
 
 $config->{cwd} = cwd();
+use Data::Dumper qw(Dumper);
+print Dumper $ARGV[0];
 
-my @args = ($config->{path_to_chuck}, "main.ck", '--srate44100' );
+if (!$ARGV[0]) {
+    exit 'No audio path provided'
+}
+
+my @args = ($config->{path_to_chuck}, "main.ck:$ARGV[0]", '--srate44100');
 system @args;

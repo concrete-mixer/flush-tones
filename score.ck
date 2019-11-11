@@ -12,16 +12,17 @@ dynoR.limit();
 1 => int active;
 
 FxManager fxManager;
-
-_setFiles(["audio/loops"]) @=> string loopFilesList[];
+me.arg(0) => string dirPath;
+<<< dirPath + "/one-shot/concrete" >>>;
+_setFiles([ dirPath + "/loops"]) @=> string loopFilesList[];
 
 [
-    "audio/one-shot/instrumental/saxophone",
-    "audio/one-shot/instrumental/trumpet",
-    "audio/one-shot/instrumental/tuba",
-    "audio/one-shot/instrumental/bassoon",
-    "audio/one-shot/instrumental/contrabassoon",
-    "audio/one-shot/concrete"
+    dirPath + "/one-shot/instrumental/saxophone",
+    dirPath + "/one-shot/instrumental/trumpet",
+    dirPath + "/one-shot/instrumental/tuba",
+    dirPath + "/one-shot/instrumental/bassoon",
+    dirPath + "/one-shot/instrumental/contrabassoon",
+    dirPath + "/one-shot/concrete"
 ] @=> string oneShotFileDirs[];
 
 _setFiles(oneShotFileDirs) @=> string oneShotFilesList[];
@@ -42,9 +43,9 @@ fun string[] _setFiles(string fileDirs[]) {
 
     for (0 => int i; i < fileDirs.cap(); i++) {
         fileDirs[i] => string dirPath;
-        fileList.open(me.dir() + dirPath);
+        fileList.open(dirPath);
 
-        _processFileList( fileList.dirList(), me.dir() + dirPath) @=> string files[];
+        _processFileList( fileList.dirList(), dirPath) @=> string files[];
 
         fileList.close();
 

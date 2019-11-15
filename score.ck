@@ -152,7 +152,7 @@ fun void playSnd(SndBuf2 bufs[], string files[] ) {
     chooser.getInt( 0, bufs.cap() - 1 ) => int choice;
     Sample sample;
 
-    chooser.takeAction( 3 ) => int fxOn;
+    chooser.getInt( 0, 2 ) => int fxOn;
     <<< "playing", files[choice] >>>;
     spork ~ sample.initialise(files[choice], bufs[choice], 0, 0.8, dynoL, dynoR );
 

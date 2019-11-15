@@ -97,6 +97,6 @@ public class Sample {
     }
 
     fun void setMix( float gain ) {
-        0 => pan.gain;
+        gain => pan.gain;
     }
 }
